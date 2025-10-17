@@ -1,103 +1,150 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import Header from "@/components/Header";
+
+import type { PackageJson } from "@/lib/types";
+import { ArrowRight } from "lucide-react";
+import JsonUploader from "@/components/JsonUploader";
+import VersionSelector from "@/components/VersionSelector";
+import DependencyAnalyzer from "@/components/DependencyAnalyzer";
+import Footer from "@/components/Footer";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [packageJson, setPackageJson] = useState<PackageJson | null>(null);
+  const [currentVersion, setCurrentVersion] = useState<string>("");
+  const [targetVersion, setTargetVersion] = useState<string>("");
+  const [showResults, setShowResults] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  const handlePackageJsonLoad = (data: PackageJson) => {
+    setPackageJson(data);
+    setShowResults(false);
+
+    const rnVersion =
+      data.dependencies?.["react-native"] ||
+      data.devDependencies?.["react-native"];
+    if (rnVersion) {
+      const cleanVersion = rnVersion.replace(/[\^~]/, "");
+      setCurrentVersion(cleanVersion);
+    }
+  };
+
+  const handleAnalyze = () => {
+    if (packageJson && currentVersion && targetVersion) {
+      setShowResults(true);
+    }
+  };
+
+  const canAnalyze =
+    packageJson &&
+    currentVersion &&
+    targetVersion &&
+    currentVersion !== targetVersion;
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
+      <Header />
+
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 py-16 max-w-4xl text-center">
+          <div className="animate-fade-in">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+              Upgrade React Native
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">
+                Dependencies Safely
+              </span>
+            </h1>
+            <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
+              Analyze your package.json and get compatibility-checked
+              recommendations for your target React Native version.
+            </p>
+          </div>
+        </section>
+
+        {/* Main Content */}
+        <section className="container mx-auto px-4 pb-16 max-w-5xl">
+          <div className="space-y-8">
+            {/* Step 1 */}
+            <div className="animate-fade-in">
+              <StepHeader number={1} title="Paste Your package.json" />
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <JsonUploader onPackageJsonLoad={handlePackageJsonLoad} />
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            {packageJson && (
+              <div className="animate-slide-in">
+                <StepHeader number={2} title="Select Target Version" />
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                  <VersionSelector
+                    currentVersion={currentVersion}
+                    targetVersion={targetVersion}
+                    onCurrentChange={setCurrentVersion}
+                    onTargetChange={setTargetVersion}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Analyze Button */}
+            {packageJson && (
+              <div className="text-center animate-slide-in">
+                <button
+                  onClick={handleAnalyze}
+                  disabled={!canAnalyze}
+                  className={`group inline-flex items-center gap-3 px-8 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all ${
+                    canAnalyze
+                      ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:shadow-xl hover:scale-105 active:scale-100"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                  }`}
+                >
+                  Analyze Dependencies
+                  <ArrowRight
+                    className={`w-5 h-5 transition-transform ${
+                      canAnalyze ? "group-hover:translate-x-1" : ""
+                    }`}
+                  />
+                </button>
+                {!canAnalyze && currentVersion === targetVersion && (
+                  <p className="text-sm text-gray-500 mt-3">
+                    Please select a different target version
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Step 3 - Results */}
+            {showResults && packageJson && (
+              <div className="animate-fade-in">
+                <StepHeader number={3} title="Review Changes" />
+                <DependencyAnalyzer
+                  packageJson={packageJson}
+                  currentVersion={currentVersion}
+                  targetVersion={targetVersion}
+                />
+              </div>
+            )}
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      <Footer />
+    </div>
+  );
+}
+
+// Step Header Component
+function StepHeader({ number, title }: { number: number; title: string }) {
+  return (
+    <div className="flex items-center gap-4 mb-4">
+      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white font-bold shadow-md">
+        {number}
+      </div>
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+        {title}
+      </h2>
     </div>
   );
 }
