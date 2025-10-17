@@ -2,8 +2,6 @@
 
 A powerful tool to help React Native developers safely upgrade their dependencies with automatic compatibility checking.
 
-![RN Safe Upgrade](https://via.placeholder.com/800x400?text=RN+Safe+Upgrade)
-
 ## ✨ Features
 
 - 📋 **Paste or Upload** your package.json

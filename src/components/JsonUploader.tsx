@@ -14,13 +14,15 @@ export default function JsonUploader({ onPackageJsonLoad }: JsonUploaderProps) {
   const [success, setSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validatePackageJson = (data: any): boolean => {
-    if (!data || typeof data !== "object") {
+  const validatePackageJson = (data: unknown): boolean => {
+    if (!data || typeof data !== "object" || data === null) {
       setError("Invalid JSON format");
       return false;
     }
 
-    if (!data.dependencies && !data.devDependencies) {
+    const packageObject = data as Record<string, unknown>;
+
+    if (!packageObject.dependencies && !packageObject.devDependencies) {
       setError("No dependencies found in package.json");
       return false;
     }
@@ -41,7 +43,7 @@ export default function JsonUploader({ onPackageJsonLoad }: JsonUploaderProps) {
         setSuccess(true);
         onPackageJsonLoad(parsed);
       }
-    } catch (e) {
+    } catch {
       setError("Invalid JSON syntax");
     }
   };

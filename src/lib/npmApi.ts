@@ -1,4 +1,5 @@
 import axios from "axios";
+import semver from "semver";
 import type { NpmPackageInfo } from "./types";
 
 const NPM_REGISTRY = "https://registry.npmjs.org";
@@ -29,7 +30,6 @@ export async function fetchPackageInfo(
 
 export function getAvailableVersions(packageInfo: NpmPackageInfo): string[] {
   return Object.keys(packageInfo.versions).sort((a, b) => {
-    const semver = require("semver");
     return semver.rcompare(a, b);
   });
 }

@@ -31,35 +31,35 @@ export default function DependencyAnalyzer({
   const [filter, setFilter] = useState<"all" | "updates" | "breaking">("all");
 
   useEffect(() => {
+    const analyzePackages = async () => {
+      setAnalyzing(true);
+      setError(null);
+
+      try {
+        const allDeps = {
+          ...packageJson.dependencies,
+          ...packageJson.devDependencies,
+        };
+
+        const analysisResults = await analyzeAllDependencies(
+          allDeps,
+          targetVersion,
+          (current, total) => {
+            setProgress({ current, total });
+          }
+        );
+
+        setResults(analysisResults);
+      } catch (err) {
+        setError("Failed to analyze dependencies. Please try again.");
+        console.error(err);
+      } finally {
+        setAnalyzing(false);
+      }
+    };
+
     analyzePackages();
   }, [packageJson, currentVersion, targetVersion]);
-
-  const analyzePackages = async () => {
-    setAnalyzing(true);
-    setError(null);
-
-    try {
-      const allDeps = {
-        ...packageJson.dependencies,
-        ...packageJson.devDependencies,
-      };
-
-      const analysisResults = await analyzeAllDependencies(
-        allDeps,
-        targetVersion,
-        (current, total) => {
-          setProgress({ current, total });
-        }
-      );
-
-      setResults(analysisResults);
-    } catch (err) {
-      setError("Failed to analyze dependencies. Please try again.");
-      console.error(err);
-    } finally {
-      setAnalyzing(false);
-    }
-  };
 
   const filteredResults = results.filter((result) => {
     if (filter === "updates") return result.needsUpdate;

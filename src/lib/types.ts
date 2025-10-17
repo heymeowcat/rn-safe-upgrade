@@ -4,7 +4,7 @@ export interface PackageJson {
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface DependencyAnalysis {
@@ -36,7 +36,7 @@ export interface VersionInfo {
     node?: string;
     npm?: string;
   };
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface RNCompatibility {
