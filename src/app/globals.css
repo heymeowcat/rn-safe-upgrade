@@ -24,3 +24,249 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s ease-out;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, transform, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   React Diff View - Layout Fix
+   ============================================ */
+
+.diff-container-fixed {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  width: 100%;
+  overflow-x: auto;
+  background-color: #0d1117;
+  /* Dark background for the container */
+}
+
+/* Force the table to behave correctly */
+.diff-container-fixed table {
+  width: 100%;
+  table-layout: fixed;
+  /* This is crucial for widths to be respected */
+  border-collapse: collapse;
+}
+
+/* Reset padding on all cells and set text wrapping */
+.diff-container-fixed td {
+  padding: 0;
+  /* KEY CHANGE: Remove all padding from table cells */
+  vertical-align: top;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Gutter (line number) cells */
+.diff-gutter {
+  width: 50px;
+  min-width: 50px;
+  padding: 0 10px;
+  /* Give line numbers horizontal padding */
+  text-align: right;
+  user-select: none;
+}
+
+/* Code content cells */
+.diff-code {
+  width: calc(50% - 50px);
+  /* Define the column width */
+}
+
+/* The element containing the actual text line */
+.diff-line {
+  padding: 0 10px;
+  /* KEY CHANGE: Apply padding here, inside the cell */
+}
+
+
+/* ============================================
+   React Diff View - Color Theme
+   ============================================ */
+
+/* Light mode overrides */
+@media (prefers-color-scheme: light) {
+  .diff-container-fixed {
+    background-color: #fff;
+  }
+
+  .diff-gutter {
+    background-color: #f6f8fa;
+    color: #57606a;
+    border-right: 1px solid #d0d7de;
+  }
+
+  .diff-line {
+    background-color: #fff;
+    color: #171717;
+  }
+}
+
+/* Light mode colors */
+.diff-gutter-insert {
+  background-color: #ccffd8;
+}
+
+.diff-gutter-delete {
+  background-color: #ffd7d5;
+}
+
+.diff-code-insert {
+  background-color: #e6ffec;
+}
+
+.diff-code-delete {
+  background-color: #ffebe9;
+}
+
+.diff-code-insert .diff-code-edit {
+  background-color: #abf2bc;
+}
+
+.diff-code-delete .diff-code-edit {
+  background-color: #ffcecb;
+}
+
+/* Dark mode diff styles */
+@media (prefers-color-scheme: dark) {
+  .diff-gutter {
+    background-color: #161b22;
+    color: #8b949e;
+    border-right: 1px solid #30363d;
+  }
+
+  .diff-line {
+    color: #e6edf3;
+    background-color: #0d1117;
+  }
+
+  .diff-gutter-insert {
+    background-color: #033a16;
+  }
+
+  .diff-gutter-delete {
+    background-color: #5a1e1e;
+  }
+
+  .diff-code-insert {
+    background-color: #033a16;
+    color: #aff5b4;
+  }
+
+  .diff-code-delete {
+    background-color: #5a1e1e;
+    color: #ffdcd7;
+  }
+
+  .diff-code-insert .diff-code-edit {
+    background-color: #0d4429;
+  }
+
+  .diff-code-delete .diff-code-edit {
+    background-color: #8b2e2e;
+  }
+
+  .diff-code-omit {
+    background-color: #161b22;
+    color: #8b949e;
+  }
+}
+
+/* Hunk headers */
+.diff-hunk-header {
+  background-color: #f6f8fa;
+  color: #57606a;
+  padding: 5px 10px;
+  font-weight: 600;
+  border-top: 1px solid #d0d7de;
+  border-bottom: 1px solid #d0d7de;
+}
+
+@media (prefers-color-scheme: dark) {
+  .diff-hunk-header {
+    background-color: #161b22;
+    color: #8b949e;
+    border-color: #30363d;
+  }
+}
+
+/* Horizontal scrollbar styling */
+.diff-container-fixed::-webkit-scrollbar {
+  height: 8px;
+}
+
+.diff-container-fixed::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .diff-container-fixed::-webkit-scrollbar-track {
+    background: #1a1a1a;
+  }
+}
+
+.diff-container-fixed::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.diff-container-fixed::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

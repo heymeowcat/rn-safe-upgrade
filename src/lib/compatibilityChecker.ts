@@ -1,11 +1,6 @@
 import semver from "semver";
-import type {
-  DependencyAnalysis,
-  NpmPackageInfo,
-  RNCompatibility,
-} from "./types";
+import type { DependencyAnalysis, NpmPackageInfo } from "./types";
 import { fetchPackageInfo, getLatestVersion } from "./npmApi";
-import compatibilityData from "@/data/rnCompatibility.json";
 
 export async function analyzeDependency(
   packageName: string,
@@ -42,21 +37,6 @@ export async function analyzeDependency(
 
   const latestVersion = getLatestVersion(packageInfo);
 
-  const knownCompatible = getKnownCompatibleVersion(
-    packageName,
-    targetRNVersion
-  );
-
-  if (knownCompatible) {
-    return createAnalysis(
-      packageName,
-      currentVersion,
-      knownCompatible,
-      latestVersion,
-      "From curated compatibility database"
-    );
-  }
-
   const recommendedVersion = await findCompatibleVersion(
     packageInfo,
     targetRNVersion
@@ -69,24 +49,6 @@ export async function analyzeDependency(
     latestVersion,
     "Based on peer dependency analysis"
   );
-}
-
-function getKnownCompatibleVersion(
-  packageName: string,
-  rnVersion: string
-): string | null {
-  const compat = compatibilityData as RNCompatibility;
-
-  if (compat[rnVersion]?.[packageName]) {
-    return compat[rnVersion][packageName]!;
-  }
-
-  const minorVersion = rnVersion.split(".").slice(0, 2).join(".");
-  if (compat[minorVersion]?.[packageName]) {
-    return compat[minorVersion][packageName]!;
-  }
-
-  return null;
 }
 
 async function findCompatibleVersion(

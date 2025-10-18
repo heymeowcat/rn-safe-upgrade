@@ -1,3 +1,23 @@
+export interface Change {
+  type: "insert" | "delete" | "normal";
+  content: string;
+  isInsert?: boolean;
+  isDelete?: boolean;
+  isNormal?: boolean;
+  lineNumber?: number;
+  oldLineNumber?: number;
+  newLineNumber?: number;
+}
+export interface Hunk {
+  content: string;
+  changes: Change[];
+  oldStart: number;
+  oldLines: number;
+  newStart: number;
+  newLines: number;
+  isPlain?: boolean;
+}
+
 export interface PackageJson {
   name: string;
   version: string;
@@ -45,4 +65,21 @@ export interface RNCompatibility {
     reactNative?: string;
     [packageName: string]: string | undefined;
   };
+}
+
+export interface DiffFile {
+  oldPath: string;
+  newPath: string;
+  type: "add" | "delete" | "modify" | "rename";
+  hunks: unknown[];
+  oldRevision?: string;
+  newRevision?: string;
+  isBinary?: boolean;
+}
+
+export interface AppFile {
+  path: string;
+  language: string;
+  binary: boolean;
+  done: boolean;
 }

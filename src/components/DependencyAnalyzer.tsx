@@ -3,15 +3,16 @@
 import { useState, useEffect } from "react";
 import {
   Loader2,
-  Download,
   CheckCircle,
   AlertTriangle,
   XCircle,
   Info,
+  FileText,
 } from "lucide-react";
 import type { PackageJson, DependencyAnalysis } from "@/lib/types";
 import { analyzeAllDependencies } from "@/lib/compatibilityChecker";
-import DiffViewer from "./DiffViewer";
+import RnDiffViewer from "./RnDiffViewer";
+import PackageJsonDiffViewer from "./PackageJsonDiffViewer";
 
 interface DependencyAnalyzerProps {
   packageJson: PackageJson;
@@ -72,57 +73,6 @@ export default function DependencyAnalyzer({
     updates: results.filter((r) => r.needsUpdate).length,
     breaking: results.filter((r) => r.hasBreakingChanges).length,
     compatible: results.filter((r) => !r.needsUpdate).length,
-  };
-
-  const generateNewPackageJson = () => {
-    const newPackageJson = { ...packageJson };
-
-    // Update dependencies
-    if (newPackageJson.dependencies) {
-      results.forEach((result) => {
-        if (newPackageJson.dependencies![result.package]) {
-          newPackageJson.dependencies![
-            result.package
-          ] = `^${result.recommendedVersion}`;
-        }
-      });
-    }
-
-    // Update devDependencies
-    if (newPackageJson.devDependencies) {
-      results.forEach((result) => {
-        if (newPackageJson.devDependencies![result.package]) {
-          newPackageJson.devDependencies![
-            result.package
-          ] = `^${result.recommendedVersion}`;
-        }
-      });
-    }
-
-    // Update React Native version
-    if (newPackageJson.dependencies?.["react-native"]) {
-      newPackageJson.dependencies["react-native"] = targetVersion;
-    }
-
-    return newPackageJson;
-  };
-
-  const downloadPackageJson = () => {
-    const newPackageJson = generateNewPackageJson();
-    const blob = new Blob([JSON.stringify(newPackageJson, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "package.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const copyToClipboard = () => {
-    const newPackageJson = generateNewPackageJson();
-    navigator.clipboard.writeText(JSON.stringify(newPackageJson, null, 2));
   };
 
   if (analyzing) {
@@ -199,23 +149,6 @@ export default function DependencyAnalyzer({
         />
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-3">
-        <button
-          onClick={downloadPackageJson}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          Download Updated package.json
-        </button>
-        <button
-          onClick={copyToClipboard}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-        >
-          📋 Copy to Clipboard
-        </button>
-      </div>
-
       {/* Filter Tabs */}
       <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
         <FilterTab
@@ -251,19 +184,43 @@ export default function DependencyAnalyzer({
         )}
       </div>
 
-      {/* Diff Viewer */}
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-4">📄 package.json Diff</h3>
-        <DiffViewer
-          oldPackageJson={packageJson}
-          newPackageJson={generateNewPackageJson()}
+      {/* Smart Package.json Upgrade - FIRST */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <FileText className="w-5 h-5" />
+          Your Package.json Upgrade
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          This shows your project's dependencies upgraded to compatible versions
+          for React Native {targetVersion}.
+        </p>
+        <PackageJsonDiffViewer
+          userPackageJson={packageJson}
+          dependencyAnalysis={results}
+          targetVersion={targetVersion}
         />
+      </div>
+
+      {/* React Native Core Changes */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-xl font-semibold flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              React Native Core File Changes
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Native code, configuration, and other React Native template
+              changes
+            </p>
+          </div>
+        </div>
+        <RnDiffViewer fromVersion={currentVersion} toVersion={targetVersion} />
       </div>
     </div>
   );
 }
 
-// Statistics Card Component
 interface StatCardProps {
   label: string;
   value: number;
@@ -273,27 +230,25 @@ interface StatCardProps {
 
 function StatCard({ label, value, icon: Icon, color }: StatCardProps) {
   const colorClasses = {
-    blue: "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
+    blue: "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-800",
     yellow:
-      "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
-    red: "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200",
-    green: "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
+      "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800",
+    red: "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800",
+    green:
+      "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800",
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+    <div className={`rounded-lg p-4 border ${colorClasses[color]}`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-600 dark:text-gray-400">
-          {label}
-        </span>
-        <Icon className="w-5 h-5 text-gray-400" />
+        <span className="text-sm font-medium">{label}</span>
+        <Icon className="w-5 h-5 opacity-75" />
       </div>
-      <div className={`text-2xl font-bold ${colorClasses[color]}`}>{value}</div>
+      <div className="text-3xl font-bold">{value}</div>
     </div>
   );
 }
 
-// Filter Tab Component
 interface FilterTabProps {
   label: string;
   count: number;
@@ -316,7 +271,6 @@ function FilterTab({ label, count, active, onClick }: FilterTabProps) {
   );
 }
 
-// Dependency Card Component
 interface DependencyCardProps {
   analysis: DependencyAnalysis;
 }
