@@ -14,20 +14,27 @@ import {
   ClipboardList,
   ChevronRight,
 } from "lucide-react";
-import { Diff, Hunk, type ViewType } from "react-diff-view";
+import { Diff, Hunk, parseDiff, type ViewType } from "react-diff-view";
 import {
   fetchRNDiff,
   getChangelogURL,
   categorizeFiles,
   getFilePathsToShow,
 } from "@/lib/diffFetcher";
-import type { DiffFile } from "@/lib/types";
+import {
+  fetchRnDiffPurgePackageJson,
+  createSmartMergedPackageJson,
+  generatePackageJsonDiff,
+} from "@/lib/smartPackageJsonMerger";
+import type { DiffFile, PackageJson, DependencyAnalysis, Hunk as HunkType } from "@/lib/types";
 
 interface RnDiffViewerProps {
   fromVersion: string;
   toVersion: string;
   appName?: string;
   appPackage?: string;
+  userPackageJson?: PackageJson;
+  dependencyAnalysis?: DependencyAnalysis[];
 }
 
 function getFileKey(file: DiffFile): string {
@@ -36,11 +43,41 @@ function getFileKey(file: DiffFile): string {
   return `${file.type}-${oldP}-${newP}`;
 }
 
+function createPackageJsonDiffFile(
+  userPackageJson: PackageJson,
+  mergedPackageJson: PackageJson,
+  appName?: string
+): DiffFile | null {
+  const diffText = generatePackageJsonDiff(userPackageJson, mergedPackageJson);
+  
+  if (!diffText) {
+    return null; // No changes needed
+  }
+  
+  try {
+    const parsed = parseDiff(diffText);
+    if (parsed.length > 0 && parsed[0].hunks) {
+      return {
+        type: "modify",
+        oldPath: `${appName || "YourApp"}/package.json`,
+        newPath: `${appName || "YourApp"}/package.json`,
+        hunks: parsed[0].hunks as unknown as HunkType[],
+      };
+    }
+  } catch (e) {
+    console.error("Failed to parse package.json diff:", e);
+  }
+  
+  return null;
+}
+
 export default function RnDiffViewer({
   fromVersion,
   toVersion,
   appName,
   appPackage,
+  userPackageJson,
+  dependencyAnalysis,
 }: RnDiffViewerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [diffFiles, setDiffFiles] = useState<DiffFile[]>([]);
@@ -52,12 +89,14 @@ export default function RnDiffViewer({
   >("all");
   const [showCompleted, setShowCompleted] = useState(false);
   const doneSectionRef = useRef<HTMLDivElement>(null);
+  const mergeAppliedRef = useRef(false);
 
   useEffect(() => {
     const loadDiff = async () => {
       setIsLoading(true);
       setError(null);
       setCompletedFiles(new Set());
+      mergeAppliedRef.current = false; // Reset merge flag when loading new diffs
 
       try {
         const files = await fetchRNDiff(fromVersion, toVersion);
@@ -76,6 +115,60 @@ export default function RnDiffViewer({
 
     loadDiff();
   }, [fromVersion, toVersion]);
+
+  // Merge user's package.json with dependency analysis into the diff
+  useEffect(() => {
+    if (!userPackageJson || !dependencyAnalysis || diffFiles.length === 0 || isLoading) {
+      return;
+    }
+    
+    if (mergeAppliedRef.current) {
+      return;
+    }
+    mergeAppliedRef.current = true;
+
+    const applySmartMerge = async () => {
+      console.log("[PackageJsonMerge] Fetching rn-diff-purge package.json for", toVersion);
+      
+      const rnDiffPurgePackageJson = await fetchRnDiffPurgePackageJson(toVersion);
+      
+      console.log("[PackageJsonMerge] Creating smart merged package.json...");
+      
+      const mergedPackageJson = createSmartMergedPackageJson(
+        userPackageJson,
+        rnDiffPurgePackageJson,
+        dependencyAnalysis,
+        toVersion
+      );
+      
+      console.log("[PackageJsonMerge] Merged result:", mergedPackageJson);
+
+      const packageJsonDiff = createPackageJsonDiffFile(
+        userPackageJson,
+        mergedPackageJson,
+        appName
+      );
+
+      if (!packageJsonDiff) {
+        console.log("[PackageJsonMerge] No changes to package.json");
+        return;
+      }
+
+      setDiffFiles((prevFiles) => {
+        const newFiles = prevFiles.map((file) => {
+          const path = file.newPath || file.oldPath || "";
+          if (path.includes("package.json")) {
+            console.log("[PackageJsonMerge] Replacing package.json file:", path);
+            return packageJsonDiff;
+          }
+          return file;
+        });
+        return newFiles;
+      });
+    };
+
+    applySmartMerge();
+  }, [userPackageJson, dependencyAnalysis, appName, toVersion, diffFiles.length, isLoading]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -131,7 +224,7 @@ export default function RnDiffViewer({
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-6xl mx-auto px-4">
+      <div className="w-full">
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-12 text-center">
           <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">
@@ -147,7 +240,7 @@ export default function RnDiffViewer({
 
   if (error) {
     return (
-      <div className="w-full max-w-6xl mx-auto px-4">
+      <div className="w-full">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 flex items-start gap-3">
           <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
@@ -162,8 +255,7 @@ export default function RnDiffViewer({
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4">
-      {/* Useful Links Section */}
+    <div className="w-full">
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
         <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 text-sm">
           📚 Useful Resources
@@ -192,7 +284,6 @@ export default function RnDiffViewer({
         </div>
       </div>
 
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-4 border-b border-gray-200 dark:border-gray-700 mb-6">
         <div>
           <h2 className="text-2xl font-bold">
@@ -218,7 +309,6 @@ export default function RnDiffViewer({
         </div>
       </div>
 
-      {/* Progress Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
         <StatCard label="Total" value={stats.total} />
         <StatCard label="Completed" value={stats.completed} color="green" />
@@ -227,7 +317,6 @@ export default function RnDiffViewer({
         <StatCard label="JavaScript" value={stats.javascript} />
       </div>
 
-      {/* Category Filter */}
       <div className="flex flex-wrap gap-2 mb-6">
         <CategoryButton
           label="All Files"
@@ -261,7 +350,6 @@ export default function RnDiffViewer({
         />
       </div>
 
-      {/* Pending Files */}
       <div className="space-y-3 mb-8">
         {pendingFiles.map((file) => {
           const key = getFileKey(file);
@@ -279,7 +367,6 @@ export default function RnDiffViewer({
         })}
       </div>
 
-      {/* Completion Message */}
       {stats.completed === stats.total && stats.total > 0 && (
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-6">
           <div className="flex items-center gap-3">
@@ -298,7 +385,6 @@ export default function RnDiffViewer({
         </div>
       )}
 
-      {/* Completed Files Section */}
       {completedFilesList.length > 0 && (
         <div ref={doneSectionRef} className="mt-8">
           <div className="flex items-center gap-3 mb-4">
@@ -341,7 +427,6 @@ export default function RnDiffViewer({
         </div>
       )}
 
-      {/* Floating Progress Button */}
       {stats.total > 0 && (
         <button
           onClick={scrollToDone}
@@ -537,10 +622,8 @@ function FileCard({
   };
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-900">
-        {/* ✅ NEW: Icon button for collapsing */}
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900">
+      <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-800 sticky top-0 z-20 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
         <button
           onClick={() => setExpanded(!expanded)}
           className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -552,7 +635,6 @@ function FileCard({
           )}
         </button>
 
-        {/* ✅ MODIFIED: Main clickable area */}
         <div
           className="flex-1 flex items-center gap-2 flex-wrap cursor-pointer"
           onClick={() => setExpanded(!expanded)}
@@ -630,11 +712,9 @@ function FileCard({
             )}
           </button>
 
-          {/* ✅ REMOVED: Collapse text button */}
         </div>
       </div>
 
-      {/* Diff Content */}
       {expanded && file.hunks && file.hunks.length > 0 && (
         <div className="diff-container-fixed">
           <Diff

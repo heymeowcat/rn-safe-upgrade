@@ -15,16 +15,13 @@ export function mergePackageJsonWithAnalysis(
   dependencyAnalysis: DependencyAnalysis[],
   targetRNVersion: string
 ): MergedPackageJson {
-  // Create upgraded version
   const upgraded: PackageJson = JSON.parse(JSON.stringify(userPackageJson));
 
-  // Create a map of analysis results for quick lookup
   const analysisMap = new Map<string, DependencyAnalysis>();
   dependencyAnalysis.forEach((analysis) => {
     analysisMap.set(analysis.package, analysis);
   });
 
-  // Update dependencies
   if (upgraded.dependencies) {
     Object.keys(upgraded.dependencies).forEach((pkgName) => {
       if (pkgName === "react-native") {
@@ -40,7 +37,6 @@ export function mergePackageJsonWithAnalysis(
     });
   }
 
-  // Update devDependencies
   if (upgraded.devDependencies) {
     Object.keys(upgraded.devDependencies).forEach((pkgName) => {
       const analysis = analysisMap.get(pkgName);
@@ -50,7 +46,6 @@ export function mergePackageJsonWithAnalysis(
     });
   }
 
-  // Generate unified diff text
   const diffText = generatePackageJsonDiff(userPackageJson, upgraded);
 
   return {
@@ -79,7 +74,6 @@ index 0000000..1111111 100644
 +++ b/package.json
 `;
 
-  // Find differences
   const maxLines = Math.max(originalLines.length, upgradedLines.length);
   let hunkStart = -1;
   let hunkLines: string[] = [];
@@ -139,7 +133,6 @@ index 0000000..1111111 100644
     }
   }
 
-  // Output remaining hunk if any
   if (hunkLines.length > 0) {
     const addedCount = hunkLines.filter((l) => l.startsWith("+")).length;
     const removedCount = hunkLines.filter((l) => l.startsWith("-")).length;
@@ -213,7 +206,6 @@ export function createAnnotatedPackageJson(
 
   let output = "{\n";
 
-  // Add basic fields
   const basicFields = ["name", "version", "description", "main", "scripts"];
   basicFields.forEach((field) => {
     if (upgraded[field]) {
@@ -223,7 +215,6 @@ export function createAnnotatedPackageJson(
     }
   });
 
-  // Add dependencies with comments
   if (upgraded.dependencies) {
     output += '  "dependencies": {\n';
     const deps = Object.entries(upgraded.dependencies);
@@ -243,7 +234,6 @@ export function createAnnotatedPackageJson(
     output += "  },\n";
   }
 
-  // Add devDependencies with comments
   if (upgraded.devDependencies) {
     output += '  "devDependencies": {\n';
     const devDeps = Object.entries(upgraded.devDependencies);

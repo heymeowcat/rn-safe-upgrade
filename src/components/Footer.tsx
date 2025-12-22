@@ -57,7 +57,6 @@ export default function Footer() {
             Made with <Heart className="w-4 h-4 text-red-500 fill-current" />{" "}
             for the RN community
           </p>
-          <p>© {new Date().getFullYear()} RN Safe Upgrade</p>
         </div>
       </div>
     </footer>

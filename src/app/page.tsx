@@ -4,21 +4,34 @@ import { useState } from "react";
 import Header from "@/components/Header";
 
 import type { PackageJson } from "@/lib/types";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileCode2, Package } from "lucide-react";
 import JsonUploader from "@/components/JsonUploader";
 import VersionSelector from "@/components/VersionSelector";
 import DependencyAnalyzer from "@/components/DependencyAnalyzer";
+import RnDiffViewer from "@/components/RnDiffViewer";
 import Footer from "@/components/Footer";
 
+type Mode = "quick" | "full";
+
 export default function Home() {
+  const [mode, setMode] = useState<Mode>("quick");
   const [packageJson, setPackageJson] = useState<PackageJson | null>(null);
   const [currentVersion, setCurrentVersion] = useState<string>("");
   const [targetVersion, setTargetVersion] = useState<string>("");
-  const [showResults, setShowResults] = useState(false);
+  const [appName, setAppName] = useState<string | undefined>(undefined);
+  const [appPackage, setAppPackage] = useState<string | undefined>(undefined);
 
   const handlePackageJsonLoad = (data: PackageJson) => {
     setPackageJson(data);
-    setShowResults(false);
+
+    if (data.name) {
+      const extractedName = data.name
+        .split(/[-_]/)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join("");
+      setAppName(extractedName);
+      setAppPackage(`com.${extractedName.toLowerCase()}`);
+    }
 
     const rnVersion =
       data.dependencies?.["react-native"] ||
@@ -29,101 +42,119 @@ export default function Home() {
     }
   };
 
-  const handleAnalyze = () => {
-    if (packageJson && currentVersion && targetVersion) {
-      setShowResults(true);
-    }
-  };
-
-  const canAnalyze =
-    packageJson &&
-    currentVersion &&
-    targetVersion &&
-    currentVersion !== targetVersion;
+  const canShowDiff = currentVersion && targetVersion && currentVersion !== targetVersion;
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
       <Header />
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 py-16 max-w-4xl text-center">
+        <section className="px-6 py-8 text-center">
           <div className="animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
               Upgrade React Native
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">
                 Dependencies Safely
               </span>
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
-              Analyze your package.json and get compatibility-checked
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
+              View file changes between versions and get compatibility-checked
               recommendations for your target React Native version.
             </p>
           </div>
+
+          <div className="flex justify-center gap-2 mb-6">
+            <button
+              onClick={() => setMode("quick")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                mode === "quick"
+                  ? "bg-blue-600 text-white shadow-lg"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`}
+            >
+              <FileCode2 className="w-4 h-4" />
+              Quick Mode
+            </button>
+            <button
+              onClick={() => setMode("full")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                mode === "full"
+                  ? "bg-blue-600 text-white shadow-lg"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              Full Analysis
+            </button>
+          </div>
         </section>
 
-        {/* Main Content */}
-        <section className="container mx-auto px-4 pb-16 max-w-5xl">
-          <div className="space-y-8">
-            {/* Step 1 */}
-            <div className="animate-fade-in">
-              <StepHeader number={1} title="Paste Your package.json" />
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <JsonUploader onPackageJsonLoad={handlePackageJsonLoad} />
-              </div>
+        <section className="px-6 pb-12">
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h2 className="text-lg font-semibold mb-4">Select Versions</h2>
+              <VersionSelector
+                currentVersion={currentVersion}
+                targetVersion={targetVersion}
+                onCurrentChange={setCurrentVersion}
+                onTargetChange={setTargetVersion}
+              />
             </div>
 
-            {/* Step 2 */}
-            {packageJson && (
-              <div className="animate-slide-in">
-                <StepHeader number={2} title="Select Target Version" />
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                  <VersionSelector
-                    currentVersion={currentVersion}
-                    targetVersion={targetVersion}
-                    onCurrentChange={setCurrentVersion}
-                    onTargetChange={setTargetVersion}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Analyze Button */}
-            {packageJson && (
-              <div className="text-center animate-slide-in">
-                <button
-                  onClick={handleAnalyze}
-                  disabled={!canAnalyze}
-                  className={`group inline-flex items-center gap-3 px-8 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all ${
-                    canAnalyze
-                      ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:shadow-xl hover:scale-105 active:scale-100"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                  }`}
-                >
-                  Analyze Dependencies
-                  <ArrowRight
-                    className={`w-5 h-5 transition-transform ${
-                      canAnalyze ? "group-hover:translate-x-1" : ""
-                    }`}
-                  />
-                </button>
-                {!canAnalyze && currentVersion === targetVersion && (
-                  <p className="text-sm text-gray-500 mt-3">
-                    Please select a different target version
-                  </p>
+            {mode === "full" && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 animate-slide-in">
+                <h2 className="text-lg font-semibold mb-4">
+                  Paste Your package.json
+                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
+                    (for smart dependency analysis)
+                  </span>
+                </h2>
+                <JsonUploader onPackageJsonLoad={handlePackageJsonLoad} />
+                {appName && (
+                  <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <p className="text-sm text-green-800 dark:text-green-200">
+                      ✓ Detected app: <strong>{appName}</strong> — file paths will be updated accordingly
+                    </p>
+                  </div>
                 )}
               </div>
             )}
 
-            {/* Step 3 - Results */}
-            {showResults && packageJson && (
+            {canShowDiff && (
               <div className="animate-fade-in">
-                <StepHeader number={3} title="Review Changes" />
-                <DependencyAnalyzer
-                  packageJson={packageJson}
-                  currentVersion={currentVersion}
-                  targetVersion={targetVersion}
-                />
+                {mode === "full" && packageJson ? (
+                  <DependencyAnalyzer
+                    packageJson={packageJson}
+                    currentVersion={currentVersion}
+                    targetVersion={targetVersion}
+                    appName={appName}
+                    appPackage={appPackage}
+                  />
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-3 py-2">
+                      <span className="font-mono font-semibold text-lg text-blue-600 dark:text-blue-400">
+                        {currentVersion}
+                      </span>
+                      <ArrowRight className="w-5 h-5 text-gray-400" />
+                      <span className="font-mono font-semibold text-lg text-violet-600 dark:text-violet-400">
+                        {targetVersion}
+                      </span>
+                    </div>
+                    <RnDiffViewer
+                      fromVersion={currentVersion}
+                      toVersion={targetVersion}
+                      appName={appName}
+                      appPackage={appPackage}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!canShowDiff && (
+              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                <p>Select your current and target versions above to see the upgrade diff</p>
               </div>
             )}
           </div>
@@ -131,20 +162,6 @@ export default function Home() {
       </main>
 
       <Footer />
-    </div>
-  );
-}
-
-// Step Header Component
-function StepHeader({ number, title }: { number: number; title: string }) {
-  return (
-    <div className="flex items-center gap-4 mb-4">
-      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white font-bold shadow-md">
-        {number}
-      </div>
-      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-        {title}
-      </h2>
     </div>
   );
 }
