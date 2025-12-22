@@ -43,27 +43,40 @@ function UpgradeHelper() {
 
   // Sync state to URL
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    if (currentVersion) params.set("from", currentVersion);
-    else params.delete("from");
-    
-    if (targetVersion) params.set("to", targetVersion);
-    else params.delete("to");
-    
-    if (appName) params.set("name", appName);
-    else params.delete("name");
-    
-    if (appPackage) params.set("package", appPackage);
-    else params.delete("package");
+    const currentFrom = searchParams.get("from") || "";
+    const currentTo = searchParams.get("to") || "";
+    const currentName = searchParams.get("name") || "";
+    const currentPackage = searchParams.get("package") || "";
 
-    const newQuery = params.toString();
-    const currentQuery = searchParams.toString();
-    
-    if (newQuery !== currentQuery) {
-      router.replace(`${pathname}?${newQuery}`, { scroll: false });
+    const targetFrom = currentVersion || "";
+    const targetTo = targetVersion || "";
+    const targetName = appName || "";
+    const targetPackage = appPackage || "";
+
+    if (
+      currentFrom !== targetFrom ||
+      currentTo !== targetTo ||
+      currentName !== targetName ||
+      currentPackage !== targetPackage
+    ) {
+      const params = new URLSearchParams(window.location.search);
+      
+      if (targetFrom) params.set("from", targetFrom);
+      else params.delete("from");
+      
+      if (targetTo) params.set("to", targetTo);
+      else params.delete("to");
+      
+      if (targetName) params.set("name", targetName);
+      else params.delete("name");
+      
+      if (targetPackage) params.set("package", targetPackage);
+      else params.delete("package");
+
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, "", newUrl);
     }
-  }, [currentVersion, targetVersion, appName, appPackage, pathname, router, searchParams]);
+  }, [currentVersion, targetVersion, appName, appPackage, searchParams]);
 
   const handlePackageJsonLoad = (data: PackageJson) => {
     setPackageJson(data);
