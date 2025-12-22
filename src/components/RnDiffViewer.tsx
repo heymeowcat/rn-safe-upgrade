@@ -88,6 +88,7 @@ export default function RnDiffViewer({
     "all" | "android" | "ios" | "javascript" | "config"
   >("all");
   const [showCompleted, setShowCompleted] = useState(false);
+  const [mergedPackageJsonContent, setMergedPackageJsonContent] = useState<string | null>(null);
   const doneSectionRef = useRef<HTMLDivElement>(null);
   const mergeAppliedRef = useRef(false);
 
@@ -142,6 +143,9 @@ export default function RnDiffViewer({
       );
       
       console.log("[PackageJsonMerge] Merged result:", mergedPackageJson);
+      
+      // Store the full merged JSON content for the Full JSON tab
+      setMergedPackageJsonContent(JSON.stringify(mergedPackageJson, null, 2));
 
       const packageJsonDiff = createPackageJsonDiffFile(
         userPackageJson,
@@ -353,6 +357,7 @@ export default function RnDiffViewer({
       <div className="space-y-3 mb-8">
         {pendingFiles.map((file) => {
           const key = getFileKey(file);
+          const isPackageJson = (file.newPath || file.oldPath || "").includes("package.json");
           return (
             <FileCard
               key={key}
@@ -362,6 +367,7 @@ export default function RnDiffViewer({
               onToggle={() => toggleFileComplete(key)}
               appName={appName}
               appPackage={appPackage}
+              fullJsonContent={isPackageJson ? mergedPackageJsonContent : undefined}
             />
           );
         })}
@@ -410,6 +416,7 @@ export default function RnDiffViewer({
             <div className="space-y-3 opacity-60">
               {completedFilesList.map((file) => {
                 const key = getFileKey(file);
+                const isPackageJson = (file.newPath || file.oldPath || "").includes("package.json");
                 return (
                   <FileCard
                     key={key}
@@ -419,6 +426,7 @@ export default function RnDiffViewer({
                     onToggle={() => toggleFileComplete(key)}
                     appName={appName}
                     appPackage={appPackage}
+                    fullJsonContent={isPackageJson ? mergedPackageJsonContent : undefined}
                   />
                 );
               })}
@@ -511,6 +519,7 @@ interface FileCardProps {
   onToggle: () => void;
   appName?: string;
   appPackage?: string;
+  fullJsonContent?: string | null;
 }
 
 function FileCard({
@@ -520,10 +529,13 @@ function FileCard({
   onToggle,
   appName,
   appPackage,
+  fullJsonContent,
 }: FileCardProps) {
   const [expanded, setExpanded] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [isPatchCopied, setIsPatchCopied] = useState(false);
+
+  const isPackageJson = (file.newPath || file.oldPath || "").includes("package.json");
 
   const { oldPath, newPath } = getFilePathsToShow({
     oldPath: file.oldPath,
@@ -534,15 +546,15 @@ function FileCard({
   const displayPath = newPath || oldPath || "unknown";
 
   const additions =
-    file.hunks?.reduce(
-      (sum, hunk) =>
-        sum + hunk.changes.filter((c) => c.type === "insert").length,
+    (file.hunks as any[])?.reduce(
+      (sum: number, hunk: any) =>
+        sum + hunk.changes.filter((c: any) => c.type === "insert").length,
       0
     ) || 0;
   const deletions =
-    file.hunks?.reduce(
-      (sum, hunk) =>
-        sum + hunk.changes.filter((c) => c.type === "delete").length,
+    (file.hunks as any[])?.reduce(
+      (sum: number, hunk: any) =>
+        sum + hunk.changes.filter((c: any) => c.type === "delete").length,
       0
     ) || 0;
 
@@ -573,11 +585,23 @@ function FileCard({
   const status = getStatusBadge();
 
   const handleCopy = async () => {
+    // For package.json with merged content, copy the full JSON
+    if (isPackageJson && fullJsonContent) {
+      try {
+        await navigator.clipboard.writeText(fullJsonContent);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      } catch (err) {
+        console.error("Failed to copy JSON content:", err);
+      }
+      return;
+    }
+
     if (!file.hunks) return;
     const newFileContent = file.hunks
-      .flatMap((hunk) => hunk.changes)
-      .filter((change) => change.type !== "delete")
-      .map((change) => change.content.substring(1))
+      .flatMap((hunk: any) => hunk.changes)
+      .filter((change: any) => change.type !== "delete")
+      .map((change: any) => change.content.substring(1))
       .join("\n");
     try {
       await navigator.clipboard.writeText(newFileContent);
@@ -589,11 +613,20 @@ function FileCard({
   };
 
   const handleRawView = () => {
+    // For package.json with merged content, show the full JSON
+    if (isPackageJson && fullJsonContent) {
+      const blob = new Blob([fullJsonContent], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      URL.revokeObjectURL(url);
+      return;
+    }
+
     if (!file.hunks) return;
     const newFileContent = file.hunks
-      .flatMap((hunk) => hunk.changes)
-      .filter((change) => change.type !== "delete")
-      .map((change) => change.content.substring(1))
+      .flatMap((hunk: any) => hunk.changes)
+      .filter((change: any) => change.type !== "delete")
+      .map((change: any) => change.content.substring(1))
       .join("\n");
     const blob = new Blob([newFileContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -606,9 +639,9 @@ function FileCard({
     const patch = [
       `--- a/${file.oldPath}`,
       `+++ b/${file.newPath}`,
-      ...file.hunks.flatMap((hunk) => [
+      ...file.hunks.flatMap((hunk: any) => [
         `@@ -${hunk.oldStart},${hunk.oldLines} +${hunk.newStart},${hunk.newLines} @@`,
-        ...hunk.changes.map((change) => change.content),
+        ...hunk.changes.map((change: any) => change.content),
       ]),
     ].join("\n");
 
@@ -715,15 +748,15 @@ function FileCard({
         </div>
       </div>
 
-      {expanded && file.hunks && file.hunks.length > 0 && (
+      {expanded && file.hunks && (file.hunks as any[]).length > 0 && (
         <div className="diff-container-fixed">
           <Diff
             viewType={viewType}
             diffType={file.type || "modify"}
-            hunks={file.hunks}
+            hunks={file.hunks as any[]}
           >
             {(hunks) =>
-              hunks.map((hunk) => <Hunk key={hunk.content} hunk={hunk} />)
+              hunks.map((hunk: any) => <Hunk key={hunk.content} hunk={hunk} />)
             }
           </Diff>
         </div>

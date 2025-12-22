@@ -7,6 +7,8 @@ import {
   Download,
   Copy,
   CheckCircle2,
+  Eye,
+  Code,
 } from "lucide-react";
 import { Diff, Hunk, parseDiff } from "react-diff-view";
 import type { PackageJson, DependencyAnalysis } from "@/lib/types";
@@ -22,6 +24,8 @@ interface PackageJsonDiffViewerProps {
   targetVersion: string;
 }
 
+type ViewTab = "diff" | "full";
+
 export default function PackageJsonDiffViewer({
   userPackageJson,
   dependencyAnalysis,
@@ -29,6 +33,7 @@ export default function PackageJsonDiffViewer({
 }: PackageJsonDiffViewerProps) {
   const [expanded, setExpanded] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<ViewTab>("full");
 
   const merged = mergePackageJsonWithAnalysis(
     userPackageJson,
@@ -37,6 +42,7 @@ export default function PackageJsonDiffViewer({
   );
 
   const summary = getPackageJsonChangeSummary(merged.original, merged.upgraded);
+  const fullJsonContent = JSON.stringify(merged.upgraded, null, 2);
 
   const parsedDiff = parseDiff(merged.diffText);
   const file = parsedDiff[0];
@@ -166,14 +172,76 @@ export default function PackageJsonDiffViewer({
         </div>
       </div>
 
+      {/* Tab Navigation */}
+      {expanded && (
+        <div className="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+          <button
+            onClick={() => setActiveTab("full")}
+            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+              activeTab === "full"
+                ? "border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-900"
+                : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+            }`}
+          >
+            <Code className="w-4 h-4" />
+            Full JSON (Copy This)
+          </button>
+          <button
+            onClick={() => setActiveTab("diff")}
+            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+              activeTab === "diff"
+                ? "border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-900"
+                : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+            }`}
+          >
+            <Eye className="w-4 h-4" />
+            Diff View
+          </button>
+        </div>
+      )}
+
+      {/* Tab Content */}
+      {expanded && activeTab === "full" && (
+        <div className="relative">
+          <div className="absolute top-2 right-2 z-10">
+            <button
+              onClick={handleCopy}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors shadow-lg"
+              title="Copy full package.json"
+            >
+              {copied ? (
+                <>
+                  <CheckCircle2 className="w-4 h-4" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  Copy Full JSON
+                </>
+              )}
+            </button>
+          </div>
+          <pre className="p-4 pt-12 overflow-x-auto text-sm bg-gray-900 text-gray-100 max-h-[600px] overflow-y-auto">
+            <code>{fullJsonContent}</code>
+          </pre>
+        </div>
+      )}
+
       {/* Diff Content */}
-      {expanded && file && file.hunks && file.hunks.length > 0 && (
+      {expanded && activeTab === "diff" && file && file.hunks && file.hunks.length > 0 && (
         <div className="diff-container-fixed">
           <Diff viewType="split" diffType="modify" hunks={file.hunks}>
             {(hunks: any[]) =>
               hunks.map((hunk: any) => <Hunk key={hunk.content} hunk={hunk} />)
             }
           </Diff>
+        </div>
+      )}
+
+      {expanded && activeTab === "diff" && (!file || !file.hunks || file.hunks.length === 0) && (
+        <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+          <p>No changes detected in package.json</p>
         </div>
       )}
 
@@ -218,3 +286,4 @@ export default function PackageJsonDiffViewer({
     </div>
   );
 }
+

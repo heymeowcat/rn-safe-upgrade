@@ -108,10 +108,12 @@ function findCompatibleVersion(
     }
   };
 
+  // If current version is already compatible, keep it
   if (allVersions.includes(currentClean) && isCompatibleWithRN(currentClean)) {
     return currentClean;
   }
 
+  // Only look for UPGRADES (versions >= current), never downgrades
   const upgradeVersions = allVersions.filter((v) => {
     try {
       return semver.gte(v, currentClean);
@@ -123,24 +125,15 @@ function findCompatibleVersion(
   // Sort upgrade candidates from lowest to highest (minimal upgrade first)
   upgradeVersions.sort((a, b) => semver.compare(a, b));
   
+  // Find the first compatible upgrade
   for (const version of upgradeVersions) {
     if (isCompatibleWithRN(version)) {
       return version;
     }
   }
 
-  const currentInfo = packageInfo.versions[currentClean];
-  if (!currentInfo?.peerDependencies?.["react-native"]) {
-    // No RN peer dep requirement, keep current
-    return currentClean;
-  }
-
-  for (const version of allVersions) {
-    if (isCompatibleWithRN(version)) {
-      return version;
-    }
-  }
-
+  // No compatible upgrade found - NEVER downgrade, keep current version
+  // The user's current version may work or they need to find an alternative
   return currentClean;
 }
 
