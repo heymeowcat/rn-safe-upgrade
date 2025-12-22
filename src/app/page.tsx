@@ -28,6 +28,19 @@ function UpgradeHelper() {
   const [appName, setAppName] = useState<string | undefined>(searchParams.get("name") || undefined);
   const [appPackage, setAppPackage] = useState<string | undefined>(searchParams.get("package") || undefined);
 
+  // Sync URL changes back to state (e.g. back button)
+  useEffect(() => {
+    const from = searchParams.get("from") || "";
+    const to = searchParams.get("to") || "";
+    const name = searchParams.get("name") || undefined;
+    const pkg = searchParams.get("package") || undefined;
+
+    if (from !== currentVersion) setCurrentVersion(from);
+    if (to !== targetVersion) setTargetVersion(to);
+    if (name !== appName) setAppName(name);
+    if (pkg !== appPackage) setAppPackage(pkg);
+  }, [searchParams]);
+
   // Sync state to URL
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -44,8 +57,12 @@ function UpgradeHelper() {
     if (appPackage) params.set("package", appPackage);
     else params.delete("package");
 
-    // Replace URL without reloading or scrolling
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    const newQuery = params.toString();
+    const currentQuery = searchParams.toString();
+    
+    if (newQuery !== currentQuery) {
+      router.replace(`${pathname}?${newQuery}`, { scroll: false });
+    }
   }, [currentVersion, targetVersion, appName, appPackage, pathname, router, searchParams]);
 
   const handlePackageJsonLoad = (data: PackageJson) => {

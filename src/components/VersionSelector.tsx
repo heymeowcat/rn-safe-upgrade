@@ -160,9 +160,6 @@ export default function VersionSelector({
           })
         );
         setVersions(formattedVersions);
-        if (formattedVersions.length > 0 && !targetVersion) {
-          onTargetChange(formattedVersions[0].version);
-        }
       } catch (err) {
         console.error("Error fetching RN versions:", err);
         setError("Failed to load React Native versions from source.");
