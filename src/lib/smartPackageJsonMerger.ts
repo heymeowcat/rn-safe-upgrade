@@ -119,9 +119,7 @@ function isCoreRNPackage(packageName: string): boolean {
   return false;
 }
 
-/**
- * Generate a unified diff between original and merged package.json
- */
+
 export function generatePackageJsonDiff(
   originalPackageJson: PackageJson,
   mergedPackageJson: PackageJson
@@ -142,27 +140,15 @@ index 0000000..1111111 100644
 +++ b/package.json
 `;
 
+ 
+  const hunkLines: string[] = [];
   const maxLines = Math.max(originalLines.length, mergedLines.length);
-  let hunkLines: string[] = [];
-  let hunkStart = 1;
-  let inHunk = false;
-  let lastChangeIdx = -1;
-
+  
   for (let i = 0; i < maxLines; i++) {
     const origLine = originalLines[i] ?? "";
     const modLine = mergedLines[i] ?? "";
 
     if (origLine !== modLine) {
-      if (!inHunk) {
-        // Add context before change
-        const contextStart = Math.max(0, i - 3);
-        for (let j = contextStart; j < i; j++) {
-          hunkLines.push(` ${originalLines[j]}`);
-        }
-        hunkStart = Math.max(1, i - 2);
-        inHunk = true;
-      }
-
       if (origLine && modLine) {
         hunkLines.push(`-${origLine}`);
         hunkLines.push(`+${modLine}`);
@@ -171,30 +157,17 @@ index 0000000..1111111 100644
       } else if (!origLine && modLine) {
         hunkLines.push(`+${modLine}`);
       }
-      lastChangeIdx = hunkLines.length - 1;
-    } else if (inHunk) {
+    } else {
       hunkLines.push(` ${origLine}`);
-      // Close hunk after 3 lines of unchanged context
-      if (hunkLines.length - lastChangeIdx > 3) {
-        const added = hunkLines.filter((l) => l.startsWith("+")).length;
-        const removed = hunkLines.filter((l) => l.startsWith("-")).length;
-        const context = hunkLines.filter((l) => l.startsWith(" ")).length;
-        diff += `@@ -${hunkStart},${removed + context} +${hunkStart},${added + context} @@\n`;
-        diff += hunkLines.join("\n") + "\n";
-        hunkLines = [];
-        inHunk = false;
-        lastChangeIdx = -1;
-      }
     }
   }
 
-  if (hunkLines.length > 0) {
-    const added = hunkLines.filter((l) => l.startsWith("+")).length;
-    const removed = hunkLines.filter((l) => l.startsWith("-")).length;
-    const context = hunkLines.filter((l) => l.startsWith(" ")).length;
-    diff += `@@ -${hunkStart},${removed + context} +${hunkStart},${added + context} @@\n`;
-    diff += hunkLines.join("\n") + "\n";
-  }
+  const added = hunkLines.filter((l) => l.startsWith("+")).length;
+  const removed = hunkLines.filter((l) => l.startsWith("-")).length;
+  const context = hunkLines.filter((l) => l.startsWith(" ")).length;
+  
+  diff += `@@ -1,${removed + context} +1,${added + context} @@\n`;
+  diff += hunkLines.join("\n") + "\n";
 
   return diff;
 }
