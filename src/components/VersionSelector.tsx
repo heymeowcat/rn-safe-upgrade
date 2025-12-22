@@ -171,7 +171,7 @@ export default function VersionSelector({
       }
     };
     fetchReactNativeVersions();
-  }, [targetVersion, onTargetChange]);
+  }, []);
 
   if (loading) {
     return (

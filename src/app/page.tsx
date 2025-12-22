@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Header from "@/components/Header";
 
 import type { PackageJson } from "@/lib/types";
-import { ArrowRight, FileCode2, Package } from "lucide-react";
+import { FileCode2, Package } from "lucide-react";
 import JsonUploader from "@/components/JsonUploader";
 import VersionSelector from "@/components/VersionSelector";
 import DependencyAnalyzer from "@/components/DependencyAnalyzer";
@@ -13,13 +14,39 @@ import Footer from "@/components/Footer";
 
 type Mode = "quick" | "full";
 
-export default function Home() {
+function UpgradeHelper() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [mode, setMode] = useState<Mode>("quick");
   const [packageJson, setPackageJson] = useState<PackageJson | null>(null);
-  const [currentVersion, setCurrentVersion] = useState<string>("");
-  const [targetVersion, setTargetVersion] = useState<string>("");
-  const [appName, setAppName] = useState<string | undefined>(undefined);
-  const [appPackage, setAppPackage] = useState<string | undefined>(undefined);
+  
+  // Initialize state from URL params
+  const [currentVersion, setCurrentVersion] = useState<string>(searchParams.get("from") || "");
+  const [targetVersion, setTargetVersion] = useState<string>(searchParams.get("to") || "");
+  const [appName, setAppName] = useState<string | undefined>(searchParams.get("name") || undefined);
+  const [appPackage, setAppPackage] = useState<string | undefined>(searchParams.get("package") || undefined);
+
+  // Sync state to URL
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (currentVersion) params.set("from", currentVersion);
+    else params.delete("from");
+    
+    if (targetVersion) params.set("to", targetVersion);
+    else params.delete("to");
+    
+    if (appName) params.set("name", appName);
+    else params.delete("name");
+    
+    if (appPackage) params.set("package", appPackage);
+    else params.delete("package");
+
+    // Replace URL without reloading or scrolling
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [currentVersion, targetVersion, appName, appPackage, pathname, router, searchParams]);
 
   const handlePackageJsonLoad = (data: PackageJson) => {
     setPackageJson(data);
@@ -132,15 +159,6 @@ export default function Home() {
                   />
                 ) : (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-center gap-3 py-2">
-                      <span className="font-mono font-semibold text-lg text-blue-600 dark:text-blue-400">
-                        {currentVersion}
-                      </span>
-                      <ArrowRight className="w-5 h-5 text-gray-400" />
-                      <span className="font-mono font-semibold text-lg text-violet-600 dark:text-violet-400">
-                        {targetVersion}
-                      </span>
-                    </div>
                     <RnDiffViewer
                       fromVersion={currentVersion}
                       toVersion={targetVersion}
@@ -163,5 +181,17 @@ export default function Home() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    }>
+      <UpgradeHelper />
+    </Suspense>
   );
 }

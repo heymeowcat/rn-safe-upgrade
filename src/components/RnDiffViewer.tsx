@@ -534,6 +534,7 @@ function FileCard({
   const [expanded, setExpanded] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [isPatchCopied, setIsPatchCopied] = useState(false);
+  const [isPathCopied, setIsPathCopied] = useState(false);
 
   const isPackageJson = (file.newPath || file.oldPath || "").includes("package.json");
 
@@ -543,7 +544,11 @@ function FileCard({
     appName,
     appPackage,
   });
-  const displayPath = newPath || oldPath || "unknown";
+  
+  const displayPath = 
+    (file.type === "delete" || newPath === "/dev/null") 
+      ? oldPath 
+      : (newPath || oldPath || "unknown");
 
   const additions =
     (file.hunks as any[])?.reduce(
@@ -580,9 +585,20 @@ function FileCard({
       label: "MODIFIED",
       color:
         "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
-    };
+      };
   };
   const status = getStatusBadge();
+
+  const handleCopyPath = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(displayPath);
+      setIsPathCopied(true);
+      setTimeout(() => setIsPathCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy path:", err);
+    }
+  };
 
   const handleCopy = async () => {
     // For package.json with merged content, copy the full JSON
@@ -660,6 +676,7 @@ function FileCard({
         <button
           onClick={() => setExpanded(!expanded)}
           className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+          title={expanded ? "Collapse file" : "Expand file"}
         >
           {expanded ? (
             <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
@@ -669,17 +686,20 @@ function FileCard({
         </button>
 
         <div
-          className="flex-1 flex items-center gap-2 flex-wrap cursor-pointer"
+          className="flex-1 flex items-center gap-2 flex-wrap cursor-pointer group"
           onClick={() => setExpanded(!expanded)}
         >
           <span className="font-mono text-sm break-all text-gray-900 dark:text-gray-100">
             {displayPath}
           </span>
-          <span
-            className={`text-xs font-semibold px-2 py-0.5 rounded ${status.color}`}
+          <button
+            onClick={handleCopyPath}
+            title="Click to copy file path"
+            className={`text-xs font-semibold px-2 py-0.5 rounded transition-all flex items-center gap-1 ${status.color} hover:contrast-125 focus:ring-2 focus:ring-offset-1 focus:ring-blue-500`}
           >
+            {isPathCopied ? <Check className="w-3 h-3" /> : null}
             {status.label}
-          </span>
+          </button>
 
           <button
             onClick={(e) => {
@@ -687,7 +707,7 @@ function FileCard({
               handleCopyPatch();
             }}
             title="Copy file patch"
-            className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
+            className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
           >
             {isPatchCopied ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -699,12 +719,12 @@ function FileCard({
 
         <div className="flex items-center gap-2 flex-shrink-0">
           {additions > 0 && (
-            <span className="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded">
+            <span className="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded" title={`${additions} additions`}>
               +{additions}
             </span>
           )}
           {deletions > 0 && (
-            <span className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-1.5 py-0.5 rounded">
+            <span className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-1.5 py-0.5 rounded" title={`${deletions} deletions`}>
               -{deletions}
             </span>
           )}
