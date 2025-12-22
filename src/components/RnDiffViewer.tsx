@@ -94,6 +94,13 @@ export default function RnDiffViewer({
 
   useEffect(() => {
     const loadDiff = async () => {
+      if (fromVersion === toVersion) {
+        setDiffFiles([]);
+        setIsLoading(false);
+        setError(null);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
       setCompletedFiles(new Set());
@@ -119,7 +126,7 @@ export default function RnDiffViewer({
 
   // Merge user's package.json with dependency analysis into the diff
   useEffect(() => {
-    if (!userPackageJson || !dependencyAnalysis || diffFiles.length === 0 || isLoading) {
+    if (!userPackageJson || !dependencyAnalysis || isLoading) {
       return;
     }
     
@@ -159,20 +166,28 @@ export default function RnDiffViewer({
       }
 
       setDiffFiles((prevFiles) => {
-        const newFiles = prevFiles.map((file) => {
-          const path = file.newPath || file.oldPath || "";
-          if (path.includes("package.json")) {
-            console.log("[PackageJsonMerge] Replacing package.json file:", path);
-            return packageJsonDiff;
-          }
-          return file;
+        const hasPackageJson = prevFiles.some((f) => {
+          const path = f.newPath || f.oldPath || "";
+          return path.includes("package.json");
         });
-        return newFiles;
+
+        if (hasPackageJson) {
+          return prevFiles.map((file) => {
+            const path = file.newPath || file.oldPath || "";
+            if (path.includes("package.json")) {
+              return packageJsonDiff;
+            }
+            return file;
+          });
+        } else {
+          // Add package.json to the list if it's not there
+          return [packageJsonDiff, ...prevFiles];
+        }
       });
     };
 
     applySmartMerge();
-  }, [userPackageJson, dependencyAnalysis, appName, toVersion, diffFiles.length, isLoading]);
+  }, [userPackageJson, dependencyAnalysis, appName, toVersion, isLoading]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

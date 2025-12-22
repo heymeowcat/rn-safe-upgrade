@@ -1,125 +1,99 @@
 import type { PackageJson, DependencyAnalysis } from "./types";
 
-// Core RN packages that should use rn-diff-purge's recommended versions
-const CORE_RN_PACKAGES = [
-  "react",
-  "react-native",
-  "react-dom",
-  "react-test-renderer",
-  "@react-native/babel-preset",
-  "@react-native/eslint-config", 
-  "@react-native/metro-config",
-  "@react-native/typescript-config",
-  "@react-native/new-app-screen",
-  "@react-native-community/cli",
-  "@react-native-community/cli-platform-android",
-  "@react-native-community/cli-platform-ios",
-];
-
 /**
  * Fetch the target version's package.json from rn-diff-purge
  */
 export async function fetchRnDiffPurgePackageJson(version: string): Promise<PackageJson | null> {
+  const cleanVersion = version.replace(/[\^~]/g, "");
+  
+  // Correct URL structure for rn-diff-purge repository
+  const url = `https://raw.githubusercontent.com/react-native-community/rn-diff-purge/release/${cleanVersion}/RnDiffApp/package.json`;
+  
   try {
-    const cleanVersion = version.replace(/[\^~]/g, "");
-    const url = `https://raw.githubusercontent.com/react-native-community/rn-diff-purge/diffs/RnDiffApp/release/${cleanVersion}/package.json`;
-    
     const response = await fetch(url);
     if (!response.ok) {
-      console.warn(`Could not fetch rn-diff-purge package.json for ${version}`);
+      console.warn(`[SmartMerge] Could not fetch rn-diff-purge package.json for ${version}: ${response.status}`);
       return null;
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log(`[SmartMerge] Successfully fetched template for RN ${version}`);
+    return data;
   } catch (error) {
-    console.error("Error fetching rn-diff-purge package.json:", error);
+    console.error("[SmartMerge] Error fetching rn-diff-purge package.json:", error);
     return null;
   }
 }
 
 /**
- * Smart merge that combines:
- * 1. User's package.json as the base (name, version, description, scripts, etc.)
- * 2. rn-diff-purge's core RN package versions
- * 3. Our dependency analysis for the user's other packages
+ * Create a merged package.json that:
+ * 1. Keeps user's package structure (name, scripts, etc.)
+ * 2. Updates packages that exist in both user's and standard template to template versions
+ * 3. Updates remaining packages based on dependency analysis
  */
 export function createSmartMergedPackageJson(
   userPackageJson: PackageJson,
-  rnDiffPurgePackageJson: PackageJson | null,
+  templatePackageJson: PackageJson | null,
   dependencyAnalysis: DependencyAnalysis[],
   targetRNVersion: string
 ): PackageJson {
   const merged: PackageJson = JSON.parse(JSON.stringify(userPackageJson));
   
+  // Build analysis map for quick lookup
   const analysisMap = new Map<string, DependencyAnalysis>();
   dependencyAnalysis.forEach((a) => analysisMap.set(a.package, a));
   
-  // Get rn-diff-purge's recommended versions for core packages
-  const rnDiffDeps = rnDiffPurgePackageJson?.dependencies || {};
-  const rnDiffDevDeps = rnDiffPurgePackageJson?.devDependencies || {};
-  
+  // Build template versions map (both deps and devDeps combined)
+  const templateVersions = new Map<string, string>();
+  if (templatePackageJson) {
+    Object.entries(templatePackageJson.dependencies || {}).forEach(([k, v]) => templateVersions.set(k, v));
+    Object.entries(templatePackageJson.devDependencies || {}).forEach(([k, v]) => templateVersions.set(k, v));
+  }
+
+  // Update dependencies
   if (merged.dependencies) {
-    Object.keys(merged.dependencies).forEach((pkgName) => {
-      if (isCoreRNPackage(pkgName)) {
-        // Use rn-diff-purge's version for core packages
-        const rnDiffVersion = rnDiffDeps[pkgName] || rnDiffDevDeps[pkgName];
-        if (rnDiffVersion) {
-          merged.dependencies![pkgName] = rnDiffVersion;
-        } else if (pkgName === "react-native") {
-          merged.dependencies![pkgName] = targetRNVersion;
-        }
-      } else {
-        // Use our analysis for non-core packages
-        const analysis = analysisMap.get(pkgName);
-        if (analysis && analysis.needsUpdate) {
-          merged.dependencies![pkgName] = `^${analysis.recommendedVersion}`;
-        }
-        // If no update needed, keep current version
+    for (const pkgName of Object.keys(merged.dependencies)) {
+      // If package exists in template, use template version
+      if (templateVersions.has(pkgName)) {
+        merged.dependencies[pkgName] = templateVersions.get(pkgName)!;
       }
-    });
+      // Special case: always update react-native to target version
+      else if (pkgName === "react-native") {
+        merged.dependencies[pkgName] = targetRNVersion;
+      }
+      // Otherwise check if analysis recommends an update
+      else {
+        const analysis = analysisMap.get(pkgName);
+        if (analysis?.needsUpdate && analysis.recommendedVersion) {
+          merged.dependencies[pkgName] = `^${analysis.recommendedVersion}`;
+        }
+      }
+    }
   }
-  
+
+  // Update devDependencies
   if (merged.devDependencies) {
-    Object.keys(merged.devDependencies).forEach((pkgName) => {
-      if (isCoreRNPackage(pkgName)) {
-        // Use rn-diff-purge's version for core packages
-        const rnDiffVersion = rnDiffDevDeps[pkgName] || rnDiffDeps[pkgName];
-        if (rnDiffVersion) {
-          merged.devDependencies![pkgName] = rnDiffVersion;
-        }
-      } else {
-        // Use our analysis for non-core packages
-        const analysis = analysisMap.get(pkgName);
-        if (analysis && analysis.needsUpdate) {
-          merged.devDependencies![pkgName] = `^${analysis.recommendedVersion}`;
-        }
-        // If no update needed, keep current version
+    for (const pkgName of Object.keys(merged.devDependencies)) {
+      // If package exists in template, use template version
+      if (templateVersions.has(pkgName)) {
+        merged.devDependencies[pkgName] = templateVersions.get(pkgName)!;
       }
-    });
+      // Otherwise check if analysis recommends an update
+      else {
+        const analysis = analysisMap.get(pkgName);
+        if (analysis?.needsUpdate && analysis.recommendedVersion) {
+          merged.devDependencies[pkgName] = `^${analysis.recommendedVersion}`;
+        }
+      }
+    }
   }
-  
+
   return merged;
 }
 
 /**
- * Check if a package is a core React Native package
+ * Generate a unified diff between original and merged package.json
  */
-function isCoreRNPackage(packageName: string): boolean {
-  if (CORE_RN_PACKAGES.includes(packageName)) {
-    return true;
-  }
-  // Also match @react-native/* scoped packages
-  if (packageName.startsWith("@react-native/")) {
-    return true;
-  }
-  // Match @react-native-community/cli* packages
-  if (packageName.startsWith("@react-native-community/cli")) {
-    return true;
-  }
-  return false;
-}
-
-
 export function generatePackageJsonDiff(
   originalPackageJson: PackageJson,
   mergedPackageJson: PackageJson
@@ -128,7 +102,7 @@ export function generatePackageJsonDiff(
   const mergedStr = JSON.stringify(mergedPackageJson, null, 2);
   
   if (originalStr === mergedStr) {
-    return ""; // No changes
+    return "";
   }
   
   const originalLines = originalStr.split("\n");
@@ -140,7 +114,6 @@ index 0000000..1111111 100644
 +++ b/package.json
 `;
 
- 
   const hunkLines: string[] = [];
   const maxLines = Math.max(originalLines.length, mergedLines.length);
   

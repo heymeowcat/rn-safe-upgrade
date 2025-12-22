@@ -170,6 +170,29 @@ export default function VersionSelector({
     fetchReactNativeVersions();
   }, []);
 
+  const targetVersions = useMemo(() => {
+    if (!currentVersion) return versions;
+    const currentIndex = versions.findIndex((v) => v.version === currentVersion);
+    if (currentIndex === -1) return versions;
+    // versions is sorted descending (latest first), so newer versions have smaller indices
+    return versions.slice(0, currentIndex);
+  }, [currentVersion, versions]);
+
+  // Clear target version if it's no longer newer than current version
+  useEffect(() => {
+    if (currentVersion && targetVersion) {
+      const currentIndex = versions.findIndex((v) => v.version === currentVersion);
+      const targetIndex = versions.findIndex((v) => v.version === targetVersion);
+      if (
+        currentIndex !== -1 &&
+        targetIndex !== -1 &&
+        targetIndex >= currentIndex
+      ) {
+        onTargetChange("");
+      }
+    }
+  }, [currentVersion, targetVersion, versions, onTargetChange]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-10">
@@ -213,7 +236,7 @@ export default function VersionSelector({
           <VersionCombobox
             value={targetVersion}
             onChange={onTargetChange}
-            versions={versions}
+            versions={targetVersions}
             placeholder="Select or type a version..."
           />
         </div>
