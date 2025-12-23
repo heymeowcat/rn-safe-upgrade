@@ -561,6 +561,13 @@ function FileCard({
   const originalPath = file.newPath || file.oldPath || "";
   const isBinary = file.isBinary || isBinaryFile(originalPath);
 
+  const cleanToVersion = toVersion.replace(/[\^~]/g, "");
+  const pathInRepo = originalPath.startsWith("RnDiffApp/") 
+    ? originalPath.substring("RnDiffApp/".length) 
+    : originalPath;
+    
+  const downloadUrl = `https://raw.githubusercontent.com/react-native-community/rn-diff-purge/release/${cleanToVersion}/RnDiffApp/${pathInRepo}`;
+
   const { oldPath, newPath } = getFilePathsToShow({
     oldPath: file.oldPath,
     newPath: file.newPath,
@@ -652,7 +659,7 @@ function FileCard({
   };
 
   const handleRawView = () => {
-    // For package.json with merged content, show the full JSON
+    // For package.json with merged content, show the full JSON (the smart merged one)
     if (isPackageJson && fullJsonContent) {
       const blob = new Blob([fullJsonContent], { type: "application/json" });
       const url = URL.createObjectURL(blob);
@@ -661,16 +668,7 @@ function FileCard({
       return;
     }
 
-    if (!file.hunks) return;
-    const newFileContent = file.hunks
-      .flatMap((hunk: any) => hunk.changes)
-      .filter((change: any) => change.type !== "delete")
-      .map((change: any) => change.content.substring(1))
-      .join("\n");
-    const blob = new Blob([newFileContent], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    window.open(url, "_blank");
-    URL.revokeObjectURL(url);
+    window.open(downloadUrl, "_blank");
   };
 
   const handleCopyPatch = async () => {
@@ -692,13 +690,6 @@ function FileCard({
       console.error("Failed to copy patch:", err);
     }
   };
-
-  const cleanToVersion = toVersion.replace(/[\^~]/g, "");
-  const pathInRepo = originalPath.startsWith("RnDiffApp/") 
-    ? originalPath.substring("RnDiffApp/".length) 
-    : originalPath;
-    
-  const downloadUrl = `https://raw.githubusercontent.com/react-native-community/rn-diff-purge/release/${cleanToVersion}/RnDiffApp/${pathInRepo}`;
 
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900">
