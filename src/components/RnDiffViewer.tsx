@@ -13,6 +13,7 @@ import {
   Check,
   ClipboardList,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import { Diff, Hunk, parseDiff, type ViewType } from "react-diff-view";
 import {
@@ -20,6 +21,7 @@ import {
   getChangelogURL,
   categorizeFiles,
   getFilePathsToShow,
+  isBinaryFile,
 } from "@/lib/diffFetcher";
 import {
   fetchRnDiffPurgePackageJson,
@@ -383,6 +385,7 @@ export default function RnDiffViewer({
               appName={appName}
               appPackage={appPackage}
               fullJsonContent={isPackageJson ? mergedPackageJsonContent : undefined}
+              toVersion={toVersion}
             />
           );
         })}
@@ -442,6 +445,7 @@ export default function RnDiffViewer({
                     appName={appName}
                     appPackage={appPackage}
                     fullJsonContent={isPackageJson ? mergedPackageJsonContent : undefined}
+                    toVersion={toVersion}
                   />
                 );
               })}
@@ -535,6 +539,7 @@ interface FileCardProps {
   appName?: string;
   appPackage?: string;
   fullJsonContent?: string | null;
+  toVersion: string;
 }
 
 function FileCard({
@@ -545,13 +550,16 @@ function FileCard({
   appName,
   appPackage,
   fullJsonContent,
+  toVersion,
 }: FileCardProps) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(file.type !== "delete");
   const [isCopied, setIsCopied] = useState(false);
   const [isPatchCopied, setIsPatchCopied] = useState(false);
   const [isPathCopied, setIsPathCopied] = useState(false);
 
   const isPackageJson = (file.newPath || file.oldPath || "").includes("package.json");
+  const originalPath = file.newPath || file.oldPath || "";
+  const isBinary = file.isBinary || isBinaryFile(originalPath);
 
   const { oldPath, newPath } = getFilePathsToShow({
     oldPath: file.oldPath,
@@ -685,6 +693,13 @@ function FileCard({
     }
   };
 
+  const cleanToVersion = toVersion.replace(/[\^~]/g, "");
+  const pathInRepo = originalPath.startsWith("RnDiffApp/") 
+    ? originalPath.substring("RnDiffApp/".length) 
+    : originalPath;
+    
+  const downloadUrl = `https://raw.githubusercontent.com/react-native-community/rn-diff-purge/release/${cleanToVersion}/RnDiffApp/${pathInRepo}`;
+
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900">
       <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-800 sticky top-0 z-20 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
@@ -716,20 +731,28 @@ function FileCard({
             {status.label}
           </button>
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCopyPatch();
-            }}
-            title="Copy file patch"
-            className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            {isPatchCopied ? (
-              <Check className="w-4 h-4 text-green-500" />
-            ) : (
-              <ClipboardList className="w-4 h-4" />
-            )}
-          </button>
+          {isBinary && (
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 tracking-wider">
+              BINARY
+            </span>
+          )}
+
+          {!isBinary && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCopyPatch();
+              }}
+              title="Copy file patch"
+              className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              {isPatchCopied ? (
+                <Check className="w-4 h-4 text-green-500" />
+              ) : (
+                <ClipboardList className="w-4 h-4" />
+              )}
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -744,17 +767,17 @@ function FileCard({
             </span>
           )}
 
-          {file.type !== "delete" && (
+          {file.type !== "delete" && !isBinary && (
             <button
               onClick={handleRawView}
               title="View raw file"
-              className="px-3 py-1 text-sm rounded-md border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="px-3 py-1 text-sm rounded-md border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium"
             >
               Raw
             </button>
           )}
 
-          {file.type !== "delete" && (
+          {file.type !== "delete" && !isBinary && (
             <button
               onClick={handleCopy}
               title="Copy new file contents"
@@ -766,6 +789,19 @@ function FileCard({
                 <ClipboardCopy className="w-4 h-4" />
               )}
             </button>
+          )}
+
+          {file.type !== "delete" && isBinary && (
+            <a
+              href={downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Download binary file"
+              className="p-2 rounded-md border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Download className="w-4 h-4" />
+            </a>
           )}
 
           <button
