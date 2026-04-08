@@ -1,7 +1,7 @@
 {
   "name": "rn-safe-upgrade",
-  "version": "0.1.0",
-  "description": "Safely upgrade React Native dependencies with compatibility checking",
+  "version": "1.0.0",
+  "description": "React Native upgrade assistant with an auto-generated brief, dependency checks, template diffs and a local agent bridge.",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -9,22 +9,20 @@
     "start": "next start",
     "lint": "eslint",
     "export": "next build",
-    "deploy": "next build && touch out/.nojekyll && gh-pages -d out -t true"
+    "deploy": "next build && npx --yes gh-pages@6 -d out -t true",
+    "refresh-data": "node scripts/refresh-snapshot.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint"
   },
   "dependencies": {
-    "axios": "^1.12.2",
-    "diff": "^8.0.2",
     "lucide-react": "^0.546.0",
-    "next": "15.5.15",
-    "prismjs": "^1.30.0",
+    "next": "15.5.28",
     "react": "19.1.0",
     "react-diff-view": "^3.3.2",
     "react-dom": "19.1.0",
-    "react-select": "^5.10.2",
     "semver": "^7.7.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/diff": "^7.0.2",
     "@types/node": "^20",
@@ -33,9 +31,53 @@
     "@types/react-dom": "^19",
     "@types/semver": "^7.7.1",
     "eslint": "^9",
-    "eslint-config-next": "15.5.5",
-    "gh-pages": "^6.3.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.0",
+    "globals": "^16.4.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.72.0"
+  },
+  "keywords": [
+    "react-native",
+    "upgrade",
+    "upgrade-helper",
+    "dependency-compatibility",
+    "agent",
+    "cli",
+    "bridge"
+  ],
+  "license": "MIT",
+  "bin": {
+    "rn-safe-upgrade": "./agent/cli.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "overrides": {
+    "@humanfs/node": "^0.16.8",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
+    "@typescript-eslint/type-utils": "^8.72.0",
+    "@typescript-eslint/typescript-estree": "^8.72.0",
+    "@typescript-eslint/utils": "^8.72.0",
+    "ajv@<6.14.0": "^6.14.0",
+    "brace-expansion@<=1.1.20": "^1.1.21",
+    "braces@<3.0.3": "^3.0.3",
+    "fast-glob": "^3.3.3",
+    "flatted@<=3.4.1": "^3.4.2",
+    "js-yaml@>=4.0.0 <4.3.2": "^4.3.2",
+    "lodash@<=4.17.23": "^4.18.1",
+    "minimatch@<=3.1.3": "^3.1.4",
+    "minimatch@>=9.0.0 <9.0.7": "^9.0.7",
+    "nanoid@<=3.3.17": "^3.3.18",
+    "picomatch@<=2.3.1": "^2.3.2",
+    "picomatch@>=4.0.0 <4.0.4": "^4.0.4",
+    "postcss": "^8.5.23",
+    "sharp": "^0.35.5",
+    "source-map-js@<1.2.2": "^1.2.2",
+    "tar@<=7.5.20": "^7.5.21"
   }
 }
