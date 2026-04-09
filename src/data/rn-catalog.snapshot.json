@@ -1,0 +1,1894 @@
+{
+  "updatedAt": 1792534057117,
+  "tags": {
+    "0.67-stable": "0.67.5",
+    "0.66-stable": "0.66.5",
+    "0.65-stable": "0.65.3",
+    "0.64-stable": "0.64.4",
+    "0.63-stable": "0.63.5",
+    "0.68-stable": "0.68.7",
+    "0.70-stable": "0.70.15",
+    "0.71-stable": "0.71.19",
+    "0.72-stable": "0.72.17",
+    "0.73-stable": "0.73.11",
+    "0.74-stable": "0.74.7",
+    "0.75-stable": "0.75.5",
+    "0.76-stable": "0.76.9",
+    "0.78-stable": "0.78.3",
+    "0.77-stable": "0.77.3",
+    "0.79-stable": "0.79.7",
+    "0.80-stable": "0.80.3",
+    "0.81-stable": "0.81.6",
+    "0.83-stable": "0.83.10",
+    "0.86-stable": "0.86.3",
+    "next": "0.88.0-rc.6",
+    "latest": "0.88.0",
+    "nightly": "0.89.0-nightly-20261020-f1f516e8c"
+  },
+  "versions": [
+    {
+      "version": "0.88.0",
+      "releasedAt": "2026-10-15T22:37:17Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx",
+      "blogHeadline": "React Native 0.88 - Web-Based Event Dispatching, Variable Fonts, SceneDelegate, no breaking changes",
+      "reactPeer": "^19.3.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^22.13.0 || ^24.3.0 || >= 26.0.0"
+    },
+    {
+      "version": "0.88.0-rc.6",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx"
+    },
+    {
+      "version": "0.88.0-rc.4",
+      "releasedAt": "2026-10-07T08:09:50Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx"
+    },
+    {
+      "version": "0.88.0-rc.3",
+      "releasedAt": "2026-09-28T13:34:05Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx"
+    },
+    {
+      "version": "0.88.0-rc.2",
+      "releasedAt": "2026-09-22T08:52:19Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx"
+    },
+    {
+      "version": "0.88.0-rc.1",
+      "releasedAt": "2026-09-16T09:35:40Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx"
+    },
+    {
+      "version": "0.88.0-rc.0",
+      "releasedAt": "2026-09-08T17:26:59Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx"
+    },
+    {
+      "version": "0.87.1",
+      "releasedAt": "2026-08-26T16:37:29Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/08/11/react-native-0.87",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-08-11-react-native-0.87.mdx",
+      "blogHeadline": "React Native 0.87 - Strict TypeScript API, Metro Update, Swift Package Manager, AGP 9 Support",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^22.13.0 || ^24.3.0 || >= 26.0.0"
+    },
+    {
+      "version": "0.87.0",
+      "releasedAt": "2026-08-11T17:11:13Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/08/11/react-native-0.87",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-08-11-react-native-0.87.mdx",
+      "blogHeadline": "React Native 0.87 - Strict TypeScript API, Metro Update, Swift Package Manager, AGP 9 Support",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^22.13.0 || ^24.3.0 || >= 26.0.0"
+    },
+    {
+      "version": "0.87.0-rc.4",
+      "releasedAt": "2026-08-05T13:24:07Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/08/11/react-native-0.87",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-08-11-react-native-0.87.mdx"
+    },
+    {
+      "version": "0.87.0-rc.3",
+      "releasedAt": "2026-07-27T18:47:17Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/08/11/react-native-0.87",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-08-11-react-native-0.87.mdx"
+    },
+    {
+      "version": "0.87.0-rc.2",
+      "releasedAt": "2026-07-21T18:13:16Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/08/11/react-native-0.87",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-08-11-react-native-0.87.mdx"
+    },
+    {
+      "version": "0.87.0-rc.1",
+      "releasedAt": "2026-07-21T18:13:05Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/08/11/react-native-0.87",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-08-11-react-native-0.87.mdx"
+    },
+    {
+      "version": "0.87.0-rc.0",
+      "releasedAt": "2026-07-08T14:21:07Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/08/11/react-native-0.87",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-08-11-react-native-0.87.mdx"
+    },
+    {
+      "version": "0.86.3",
+      "releasedAt": "2026-08-24T17:12:44Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/06/11/react-native-0.86",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-06-11-react-native-0.86.mdx",
+      "blogHeadline": "React Native 0.86 - Edge-to-Edge and DevTools Improvements, no breaking changes",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0"
+    },
+    {
+      "version": "0.86.2",
+      "releasedAt": "2026-07-27T17:34:55Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/06/11/react-native-0.86",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-06-11-react-native-0.86.mdx",
+      "blogHeadline": "React Native 0.86 - Edge-to-Edge and DevTools Improvements, no breaking changes",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0"
+    },
+    {
+      "version": "0.86.0",
+      "releasedAt": "2026-06-11T15:27:00Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/06/11/react-native-0.86",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-06-11-react-native-0.86.mdx",
+      "blogHeadline": "React Native 0.86 - Edge-to-Edge and DevTools Improvements, no breaking changes",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0"
+    },
+    {
+      "version": "0.86.0-rc.3",
+      "releasedAt": "2026-06-03T07:47:03Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/06/11/react-native-0.86",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-06-11-react-native-0.86.mdx"
+    },
+    {
+      "version": "0.86.0-rc.2",
+      "releasedAt": "2026-05-25T14:42:44Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/06/11/react-native-0.86",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-06-11-react-native-0.86.mdx"
+    },
+    {
+      "version": "0.86.0-rc.1",
+      "releasedAt": "2026-05-18T18:52:30Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/06/11/react-native-0.86",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-06-11-react-native-0.86.mdx"
+    },
+    {
+      "version": "0.86.0-rc.0",
+      "releasedAt": "2026-05-07T09:45:03Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/06/11/react-native-0.86",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-06-11-react-native-0.86.mdx"
+    },
+    {
+      "version": "0.85.3",
+      "releasedAt": "2026-05-05T15:30:48Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx",
+      "blogHeadline": "React Native 0.85 - New Animation Backend, New Jest Preset Package",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0"
+    },
+    {
+      "version": "0.85.2",
+      "releasedAt": "2026-04-20T17:22:20Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx",
+      "blogHeadline": "React Native 0.85 - New Animation Backend, New Jest Preset Package",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0"
+    },
+    {
+      "version": "0.85.1",
+      "releasedAt": "2026-04-13T21:21:35Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx",
+      "blogHeadline": "React Native 0.85 - New Animation Backend, New Jest Preset Package",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0"
+    },
+    {
+      "version": "0.85.0",
+      "releasedAt": "2026-04-08T15:47:12Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx",
+      "blogHeadline": "React Native 0.85 - New Animation Backend, New Jest Preset Package",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0"
+    },
+    {
+      "version": "0.85.0-rc.7",
+      "releasedAt": "2026-03-31T07:08:55Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx"
+    },
+    {
+      "version": "0.85.0-rc.6",
+      "releasedAt": "2026-03-24T04:41:39Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx"
+    },
+    {
+      "version": "0.85.0-rc.5",
+      "releasedAt": "2026-03-18T21:57:52Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx"
+    },
+    {
+      "version": "0.85.0-rc.1",
+      "releasedAt": "2026-03-10T15:52:10Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx"
+    },
+    {
+      "version": "0.85.0-rc.0",
+      "releasedAt": "2026-03-04T03:38:29Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/04/07/react-native-0.85",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-04-07-react-native-0.85.mdx"
+    },
+    {
+      "version": "0.84.1",
+      "releasedAt": "2026-02-27T18:49:05Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/02/11/react-native-0.84",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-02-11-react-native-0.84.mdx",
+      "blogHeadline": "React Native 0.84 - Hermes V1 by Default",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.84.0",
+      "releasedAt": "2026-02-11T18:00:08Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/02/11/react-native-0.84",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-02-11-react-native-0.84.mdx",
+      "blogHeadline": "React Native 0.84 - Hermes V1 by Default",
+      "reactPeer": "^19.2.3",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.84.0-rc.5",
+      "releasedAt": "2026-02-05T15:48:59Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/02/11/react-native-0.84",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-02-11-react-native-0.84.mdx"
+    },
+    {
+      "version": "0.84.0-rc.4",
+      "releasedAt": "2026-02-03T10:46:52Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/02/11/react-native-0.84",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-02-11-react-native-0.84.mdx"
+    },
+    {
+      "version": "0.84.0-rc.3",
+      "releasedAt": "2026-01-27T10:02:09Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/02/11/react-native-0.84",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-02-11-react-native-0.84.mdx"
+    },
+    {
+      "version": "0.84.0-rc.2",
+      "releasedAt": "2026-01-19T16:48:07Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/02/11/react-native-0.84",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-02-11-react-native-0.84.mdx"
+    },
+    {
+      "version": "0.84.0-rc.1",
+      "releasedAt": "2026-01-14T18:39:00Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/02/11/react-native-0.84",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-02-11-react-native-0.84.mdx"
+    },
+    {
+      "version": "0.84.0-rc.0",
+      "releasedAt": "2026-01-08T09:56:59Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2026/02/11/react-native-0.84",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-02-11-react-native-0.84.mdx"
+    },
+    {
+      "version": "0.83.10",
+      "releasedAt": "2026-06-26T14:42:46Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.9",
+      "releasedAt": "2026-04-27T14:54:15Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.8",
+      "releasedAt": "2026-04-24T13:23:49Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.7",
+      "releasedAt": "2026-04-24T09:31:54Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.6",
+      "releasedAt": "2026-04-16T20:03:02Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.5",
+      "releasedAt": "2026-04-14T02:27:53Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.4",
+      "releasedAt": "2026-03-06T21:51:55Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.3",
+      "releasedAt": "2026-03-05T16:18:16Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.2",
+      "releasedAt": "2026-02-06T17:30:13Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.1",
+      "releasedAt": "2025-12-18T15:42:49Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.0",
+      "releasedAt": "2025-12-10T20:07:19Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx",
+      "blogHeadline": "React Native 0.83 - React 19.2, New DevTools features, no breaking changes",
+      "reactPeer": "^19.2.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.83.0-rc.5",
+      "releasedAt": "2025-12-09T12:46:16Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx"
+    },
+    {
+      "version": "0.83.0-rc.4",
+      "releasedAt": "2025-12-03T16:18:39Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx"
+    },
+    {
+      "version": "0.83.0-rc.3",
+      "releasedAt": "2025-12-02T18:18:05Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx"
+    },
+    {
+      "version": "0.83.0-rc.2",
+      "releasedAt": "2025-11-17T17:41:55Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx"
+    },
+    {
+      "version": "0.83.0-rc.1",
+      "releasedAt": "2025-11-12T15:02:09Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx"
+    },
+    {
+      "version": "0.83.0-rc.0",
+      "releasedAt": "2025-11-05T13:19:20Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/12/10/react-native-0.83",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-12-10-react-native-0.83.mdx"
+    },
+    {
+      "version": "0.82.1",
+      "releasedAt": "2025-10-21T09:49:58Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/10/08/react-native-0.82",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx",
+      "blogHeadline": "React Native 0.82 - A New Era",
+      "reactPeer": "^19.1.1",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": ">= 20.19.4"
+    },
+    {
+      "version": "0.82.0",
+      "releasedAt": "2025-10-08T00:29:48Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/10/08/react-native-0.82",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx"
+    },
+    {
+      "version": "0.82.0-rc.5",
+      "releasedAt": "2025-09-30T13:47:38Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/10/08/react-native-0.82",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx"
+    },
+    {
+      "version": "0.82.0-rc.4",
+      "releasedAt": "2025-09-23T09:50:40Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/10/08/react-native-0.82",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx"
+    },
+    {
+      "version": "0.82.0-rc.3",
+      "releasedAt": "2025-09-17T10:22:30Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/10/08/react-native-0.82",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx"
+    },
+    {
+      "version": "0.82.0-rc.1",
+      "releasedAt": "2025-09-09T13:07:08Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/10/08/react-native-0.82",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx"
+    },
+    {
+      "version": "0.82.0-rc.0",
+      "releasedAt": "2025-09-02T12:02:59Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/10/08/react-native-0.82",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx"
+    },
+    {
+      "version": "0.81.6",
+      "releasedAt": "2026-02-06T17:30:29Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.5",
+      "releasedAt": "2025-10-21T18:58:01Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.4",
+      "releasedAt": "2025-09-10T18:27:32Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.3",
+      "releasedAt": "2025-09-10T03:14:16Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.2",
+      "releasedAt": "2025-09-09T22:36:46Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.1",
+      "releasedAt": "2025-09-01T10:21:25Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.0",
+      "releasedAt": "2025-08-12T14:47:04Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.0-rc.5",
+      "releasedAt": "2025-08-06T10:21:11Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.0-rc.3",
+      "releasedAt": "2025-07-30T10:18:45Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.0-rc.2",
+      "releasedAt": "2025-07-22T12:32:25Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.0-rc.1",
+      "releasedAt": "2025-07-15T16:49:08Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.81.0-rc.0",
+      "releasedAt": "2025-07-10T09:24:05Z",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
+    },
+    {
+      "version": "0.80.3",
+      "releasedAt": "2026-01-28T09:49:16Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.2",
+      "releasedAt": "2025-07-24T16:09:39Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.0",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.0-rc.5",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.0-rc.1",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.80.0-rc.0",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
+    },
+    {
+      "version": "0.79.7",
+      "releasedAt": "2025-10-21T18:17:49Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.6",
+      "releasedAt": "2025-08-14T14:33:38Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.5",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.4",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.3",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.2",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.0",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.0-rc.1",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.79.0-rc.0",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/04/08/react-native-0.79",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-04-08-react-native-0.79.mdx"
+    },
+    {
+      "version": "0.78.3",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.2",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.0",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.0-rc.5",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.0-rc.1",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.78.0-rc.0",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/02/19/react-native-0.78",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-02-19-react-native-0.78.mdx"
+    },
+    {
+      "version": "0.77.3",
+      "releasedAt": "2025-07-21T17:29:08Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.2",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0-rc.7",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0-rc.6",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0-rc.5",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0-rc.1",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.77.0-rc.0",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
+    },
+    {
+      "version": "0.76.9",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.8",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.7",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.6",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.5",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.4",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.3",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.2",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.0",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.0-rc.6",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.0-rc.5",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.0-rc.1",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.76.0-rc.0",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-10-23-release-0.76-new-architecture.mdx"
+    },
+    {
+      "version": "0.75.5",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.4",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.3",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.2",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.0-rc.7",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.0-rc.6",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.0-rc.5",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.75.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/08/12/release-0.75",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-08-12-release-0.75.mdx"
+    },
+    {
+      "version": "0.74.7",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.6",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.5",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.4",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.3",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.2",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.1-rc.0",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.9",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.8",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.7",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.6",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.5",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.74.0-rc.0",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2024/04/22/release-0.74",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2024-04-22-release-0.74.mdx"
+    },
+    {
+      "version": "0.73.11",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.10",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.9",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.8",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.7",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.6",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.5",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.4",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.3",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.2",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0-rc.8",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0-rc.7",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0-rc.6",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0-rc.5",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.73.0-rc.1",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-12-06-0.73-debugging-improvements-stable-symlinks.mdx"
+    },
+    {
+      "version": "0.72.17",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.15",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.14",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.13",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.12",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.11",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.10",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.9",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.8",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.7",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.6",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.5",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.4",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.3",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.2",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.1",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.0",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.0-rc.6",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.0-rc.5",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.0-rc.4",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.0-rc.3",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.0-rc.2",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.0-rc.1",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.72.0-rc.0",
+      "prerelease": true,
+      "blogUrl": "https://reactnative.dev/blog/2023/06/21/0.72-metro-package-exports-symlinks",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2023-06-21-0.72-metro-package-exports-symlinks.mdx"
+    },
+    {
+      "version": "0.71.19",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.18",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.17",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.16",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.15",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.14",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.13",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.12",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.11",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.10",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.9",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.8",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.7",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.6",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.5",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.4",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.3",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.2",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.1",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.0",
+      "prerelease": false
+    },
+    {
+      "version": "0.71.0-rc.6",
+      "prerelease": true
+    },
+    {
+      "version": "0.71.0-rc.5",
+      "prerelease": true
+    },
+    {
+      "version": "0.71.0-rc.4",
+      "prerelease": true
+    },
+    {
+      "version": "0.71.0-rc.3",
+      "prerelease": true
+    },
+    {
+      "version": "0.71.0-rc.2",
+      "prerelease": true
+    },
+    {
+      "version": "0.71.0-rc.1",
+      "prerelease": true
+    },
+    {
+      "version": "0.71.0-rc.0",
+      "prerelease": true
+    },
+    {
+      "version": "0.70.15",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.14",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.13",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.12",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.11",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.10",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.9",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.8",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.7",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.6",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.5",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.4",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.3",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.2",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.1",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.0",
+      "prerelease": false
+    },
+    {
+      "version": "0.70.0-rc.4",
+      "prerelease": true
+    },
+    {
+      "version": "0.70.0-rc.3",
+      "prerelease": true
+    },
+    {
+      "version": "0.70.0-rc.2",
+      "prerelease": true
+    },
+    {
+      "version": "0.70.0-rc.1",
+      "prerelease": true
+    },
+    {
+      "version": "0.70.0-rc.0",
+      "prerelease": true
+    },
+    {
+      "version": "0.69.12",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.11",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.10",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.9",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.8",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.7",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.6",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.5",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.4",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.3",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.2",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.1",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.0",
+      "prerelease": false
+    },
+    {
+      "version": "0.69.0-rc.6",
+      "prerelease": true
+    },
+    {
+      "version": "0.69.0-rc.5",
+      "prerelease": true
+    },
+    {
+      "version": "0.69.0-rc.4",
+      "prerelease": true
+    },
+    {
+      "version": "0.69.0-rc.3",
+      "prerelease": true
+    },
+    {
+      "version": "0.69.0-rc.2",
+      "prerelease": true
+    },
+    {
+      "version": "0.69.0-rc.1",
+      "prerelease": true
+    },
+    {
+      "version": "0.69.0-rc.0",
+      "prerelease": true
+    },
+    {
+      "version": "0.68.7",
+      "prerelease": false
+    },
+    {
+      "version": "0.68.6",
+      "prerelease": false
+    },
+    {
+      "version": "0.68.5",
+      "prerelease": false
+    },
+    {
+      "version": "0.68.4",
+      "prerelease": false
+    },
+    {
+      "version": "0.68.3",
+      "prerelease": false
+    },
+    {
+      "version": "0.68.2",
+      "prerelease": false
+    },
+    {
+      "version": "0.68.1",
+      "prerelease": false
+    },
+    {
+      "version": "0.68.0",
+      "prerelease": false
+    },
+    {
+      "version": "0.68.0-rc.4",
+      "prerelease": true
+    },
+    {
+      "version": "0.68.0-rc.3",
+      "prerelease": true
+    },
+    {
+      "version": "0.68.0-rc.2",
+      "prerelease": true
+    },
+    {
+      "version": "0.68.0-rc.1",
+      "prerelease": true
+    },
+    {
+      "version": "0.68.0-rc.0",
+      "prerelease": true
+    },
+    {
+      "version": "0.67.5",
+      "prerelease": false
+    },
+    {
+      "version": "0.67.4",
+      "prerelease": false
+    },
+    {
+      "version": "0.67.3",
+      "prerelease": false
+    },
+    {
+      "version": "0.67.2",
+      "prerelease": false
+    },
+    {
+      "version": "0.67.1",
+      "prerelease": false
+    },
+    {
+      "version": "0.67.0",
+      "prerelease": false
+    },
+    {
+      "version": "0.67.0-rc.6",
+      "prerelease": true
+    },
+    {
+      "version": "0.67.0-rc.5",
+      "prerelease": true
+    },
+    {
+      "version": "0.67.0-rc.4",
+      "prerelease": true
+    },
+    {
+      "version": "0.67.0-rc.3",
+      "prerelease": true
+    },
+    {
+      "version": "0.67.0-rc.2",
+      "prerelease": true
+    },
+    {
+      "version": "0.67.0-rc.1",
+      "prerelease": true
+    },
+    {
+      "version": "0.67.0-rc.0",
+      "prerelease": true
+    },
+    {
+      "version": "0.66.5",
+      "prerelease": false
+    },
+    {
+      "version": "0.66.4",
+      "prerelease": false
+    },
+    {
+      "version": "0.66.3",
+      "prerelease": false
+    },
+    {
+      "version": "0.66.2",
+      "prerelease": false
+    },
+    {
+      "version": "0.66.1",
+      "prerelease": false
+    },
+    {
+      "version": "0.66.0",
+      "prerelease": false
+    },
+    {
+      "version": "0.66.0-rc.4",
+      "prerelease": true
+    },
+    {
+      "version": "0.66.0-rc.3",
+      "prerelease": true
+    },
+    {
+      "version": "0.66.0-rc.2",
+      "prerelease": true
+    },
+    {
+      "version": "0.66.0-rc.1",
+      "prerelease": true
+    },
+    {
+      "version": "0.66.0-rc.0",
+      "prerelease": true
+    },
+    {
+      "version": "0.65.3",
+      "prerelease": false
+    },
+    {
+      "version": "0.65.2",
+      "prerelease": false
+    },
+    {
+      "version": "0.65.1",
+      "prerelease": false
+    },
+    {
+      "version": "0.65.0",
+      "prerelease": false
+    }
+  ]
+}

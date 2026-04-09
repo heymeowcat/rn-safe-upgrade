@@ -1,0 +1,53 @@
+name: Refresh release data
+
+# The app reads everything it shows from public sources at runtime. This
+# workflow only refreshes the committed snapshot, which gives the first paint
+# something to show and keeps the app usable offline.
+
+on:
+  schedule:
+    # Every day at 05:17 UTC.
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/refresh-snapshot.mjs
+      - .github/workflows/refresh-release-data.yml
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-release-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Refresh the React Native catalog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Refresh the snapshot
+        run: node scripts/refresh-snapshot.mjs
+
+      - name: Commit the snapshot
+        run: |
+          if git diff --quiet -- src/data/rn-catalog.snapshot.json; then
+            echo "The snapshot is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/rn-catalog.snapshot.json
+          git commit -m "chore(data): refresh the React Native catalog"
+          git push
