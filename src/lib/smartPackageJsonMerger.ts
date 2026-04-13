@@ -88,7 +88,29 @@ export function createSmartMergedPackageJson(
     }
   }
 
+  // The new template can require tooling the project does not have yet (for
+  // example @react-native/metro-config). Those are added so the synced
+  // template files keep working. Application level packages are left alone.
+  if (templatePackageJson?.devDependencies) {
+    merged.devDependencies = merged.devDependencies ?? {};
+    for (const [pkgName, version] of Object.entries(
+      templatePackageJson.devDependencies
+    )) {
+      if (merged.devDependencies[pkgName]) continue;
+      if (!isTemplateTooling(pkgName)) continue;
+      merged.devDependencies[pkgName] = version;
+    }
+  }
+
   return merged;
+}
+
+/**
+ * Tooling packages the React Native template files depend on. Only these are
+ * added automatically - the application's own dependencies are never touched.
+ */
+function isTemplateTooling(packageName: string): boolean {
+  return packageName.startsWith("@react-native/");
 }
 
 /**

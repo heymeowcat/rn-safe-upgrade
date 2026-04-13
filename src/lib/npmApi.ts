@@ -1,31 +1,48 @@
-import axios from "axios";
 import semver from "semver";
 import type { NpmPackageInfo } from "./types";
+import { cachedFetchJson } from "./data/http";
 
 const NPM_REGISTRY = "https://registry.npmjs.org";
 
-const packageCache = new Map<string, NpmPackageInfo>();
+/**
+ * The abbreviated packument is a fraction of the size of the full document
+ * and still contains everything we need (versions, peer dependencies, tags).
+ */
+const ABBREVIATED_HEADERS = {
+  Accept: "application/vnd.npm.install-v1+json",
+};
 
 export async function fetchPackageInfo(
   packageName: string
 ): Promise<NpmPackageInfo | null> {
-  try {
-    if (packageCache.has(packageName)) {
-      return packageCache.get(packageName)!;
-    }
+  const result = await cachedFetchJson<NpmPackageInfo>(
+    `npm:${packageName}`,
+    `${NPM_REGISTRY}/${packageName}`,
+    { ttl: 6 * 60 * 60 * 1000, timeout: 20000, headers: ABBREVIATED_HEADERS }
+  );
 
-    const response = await axios.get<NpmPackageInfo>(
-      `${NPM_REGISTRY}/${packageName}`,
-      { timeout: 10000 }
-    );
+  return result?.data ?? null;
+}
 
-    const data = response.data;
-    packageCache.set(packageName, data);
-    return data;
-  } catch (error) {
-    console.error(`Failed to fetch package info for ${packageName}:`, error);
-    return null;
-  }
+/**
+ * Fetches the manifest of one specific version. Much cheaper than the whole
+ * packument and used for React Native releases.
+ */
+export async function fetchPackageVersion(
+  packageName: string,
+  version: string
+): Promise<NpmPackageInfo["versions"][string] | null> {
+  const result = await cachedFetchJson<{
+    version: string;
+    peerDependencies?: Record<string, string>;
+    dependencies?: Record<string, string>;
+    engines?: { node?: string; npm?: string };
+  }>(`npm:${packageName}@${version}`, `${NPM_REGISTRY}/${packageName}/${version}`, {
+    ttl: 24 * 60 * 60 * 1000,
+    timeout: 20000,
+  });
+
+  return result?.data ?? null;
 }
 
 export function getAvailableVersions(packageInfo: NpmPackageInfo): string[] {
@@ -35,7 +52,7 @@ export function getAvailableVersions(packageInfo: NpmPackageInfo): string[] {
 }
 
 export function getLatestVersion(packageInfo: NpmPackageInfo): string {
-  return packageInfo["dist-tags"].latest;
+  return packageInfo["dist-tags"]?.latest;
 }
 
 export function hasPeerDependencies(
