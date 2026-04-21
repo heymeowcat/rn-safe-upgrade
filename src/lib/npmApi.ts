@@ -1,67 +1,72 @@
 import semver from "semver";
-import type { NpmPackageInfo } from "./types";
+import type { VersionInfo } from "./types";
 import { cachedFetchJson } from "./data/http";
 
 const NPM_REGISTRY = "https://registry.npmjs.org";
+/**
+ * The npm packument of a package with hundreds of versions can take tens of
+ * seconds to download. The jsDelivr package API returns the same version list
+ * in a fraction of the time, and the peer dependencies are read from the
+ * (small) manifest of a single version.
+ */
+const CDN_REGISTRY = "https://data.jsdelivr.com/v1/package/npm";
+
+export interface PackageCatalog {
+  versions: string[];
+  tags: Record<string, string>;
+}
+
+export async function fetchPackageCatalog(
+  packageName: string
+): Promise<PackageCatalog | null> {
+  const result = await cachedFetchJson<{
+    versions?: string[];
+    tags?: Record<string, string>;
+  }>(`pkg:${packageName}`, `${CDN_REGISTRY}/${packageName}`, {
+    ttl: 6 * 60 * 60 * 1000,
+    timeout: 15000,
+  });
+
+  if (!result?.data) return null;
+
+  return {
+    versions: result.data.versions ?? [],
+    tags: result.data.tags ?? {},
+  };
+}
 
 /**
- * The abbreviated packument is a fraction of the size of the full document
- * and still contains everything we need (versions, peer dependencies, tags).
+ * Fetches the manifest of one specific version. It contains the peer
+ * dependencies, which is what the compatibility check is based on.
  */
-const ABBREVIATED_HEADERS = {
-  Accept: "application/vnd.npm.install-v1+json",
-};
-
-export async function fetchPackageInfo(
-  packageName: string
-): Promise<NpmPackageInfo | null> {
-  const result = await cachedFetchJson<NpmPackageInfo>(
-    `npm:${packageName}`,
-    `${NPM_REGISTRY}/${packageName}`,
-    { ttl: 6 * 60 * 60 * 1000, timeout: 20000, headers: ABBREVIATED_HEADERS }
+export async function fetchPackageVersion(
+  packageName: string,
+  version: string
+): Promise<VersionInfo | null> {
+  const result = await cachedFetchJson<VersionInfo>(
+    `pkgv:${packageName}@${version}`,
+    `${NPM_REGISTRY}/${packageName}/${version}`,
+    { ttl: 24 * 60 * 60 * 1000, timeout: 15000 }
   );
 
   return result?.data ?? null;
 }
 
 /**
- * Fetches the manifest of one specific version. Much cheaper than the whole
- * packument and used for React Native releases.
+ * The latest published version of a package, according to the registry.
  */
-export async function fetchPackageVersion(
-  packageName: string,
-  version: string
-): Promise<NpmPackageInfo["versions"][string] | null> {
-  const result = await cachedFetchJson<{
-    version: string;
-    peerDependencies?: Record<string, string>;
-    dependencies?: Record<string, string>;
-    engines?: { node?: string; npm?: string };
-  }>(`npm:${packageName}@${version}`, `${NPM_REGISTRY}/${packageName}/${version}`, {
-    ttl: 24 * 60 * 60 * 1000,
-    timeout: 20000,
-  });
+export async function fetchLatestVersion(
+  packageName: string
+): Promise<string | null> {
+  const result = await cachedFetchJson<VersionInfo>(
+    `pkgl:${packageName}`,
+    `${NPM_REGISTRY}/${packageName}/latest`,
+    { ttl: 6 * 60 * 60 * 1000, timeout: 15000 }
+  );
 
-  return result?.data ?? null;
+  return result?.data?.version ?? null;
 }
 
-export function getAvailableVersions(packageInfo: NpmPackageInfo): string[] {
-  return Object.keys(packageInfo.versions).sort((a, b) => {
-    return semver.rcompare(a, b);
-  });
-}
-
-export function getLatestVersion(packageInfo: NpmPackageInfo): string {
-  return packageInfo["dist-tags"]?.latest;
-}
-
-export function hasPeerDependencies(
-  packageInfo: NpmPackageInfo,
-  version: string,
-  peerPackage: string
-): boolean {
-  const versionInfo = packageInfo.versions[version];
-  if (!versionInfo?.peerDependencies) return false;
-
-  return peerPackage in versionInfo.peerDependencies;
+export function getAvailableVersions(catalog: PackageCatalog): string[] {
+  return [...catalog.versions].sort((a, b) => semver.rcompare(a, b));
 }
