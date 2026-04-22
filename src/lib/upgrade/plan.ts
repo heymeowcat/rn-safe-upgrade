@@ -37,6 +37,8 @@ export interface UpgradePlan extends UpgradePlanPayload {
   }>;
   breakingChanges: Array<{ area?: string; text: string; url?: string }>;
   filesToApply: Array<{ path: string; binary?: boolean }>;
+  /** Files the new template version no longer contains. */
+  filesToDelete: Array<{ path: string }>;
   requiredFiles: string[];
 }
 
@@ -87,6 +89,13 @@ export function buildUpgradePlan(input: PlanInput): UpgradePlan {
     }))
     .filter((file) => file.path.length > 0);
 
+  const filesToDelete = (input.diffFiles ?? [])
+    .filter((file) => file.type === "delete")
+    .map((file) => ({
+      path: (file.oldPath || "").replace(/^RnDiffApp\//, ""),
+    }))
+    .filter((file) => file.path.length > 0);
+
   return {
     fromVersion: input.fromVersion,
     toVersion: input.toVersion,
@@ -100,6 +109,7 @@ export function buildUpgradePlan(input: PlanInput): UpgradePlan {
     breakingChanges,
     requiredFiles: filesToApply.map((file) => file.path),
     filesToApply,
+    filesToDelete,
     useAgent: input.useAgent ?? false,
     createMissingFiles: input.createMissingFiles ?? false,
   };

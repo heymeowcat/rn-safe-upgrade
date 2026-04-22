@@ -16,11 +16,12 @@
  */
 import { createServer } from "node:http";
 import { spawn, spawnSync } from "node:child_process";
-import { readFile, writeFile, mkdir, stat } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { readFile, writeFile, mkdir, stat, rm } from "node:fs/promises";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { randomBytes, randomUUID } from "node:crypto";
 import os from "node:os";
+import { tmpdir } from "node:os";
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -199,15 +200,25 @@ async function ensureCleanBranch(branchName) {
     log("warn", "Working tree has uncommitted changes - they are preserved.");
   }
 
-  const checkout = spawnSync("git", ["checkout", "-b", branchName], {
+  const exists = spawnSync("git", ["rev-parse", "--verify", branchName], {
     cwd: ROOT,
     encoding: "utf8",
   });
+
+  const args =
+    exists.status === 0
+      ? ["checkout", branchName]
+      : ["checkout", "-b", branchName];
+
+  const checkout = spawnSync("git", args, { cwd: ROOT, encoding: "utf8" });
   if (checkout.status !== 0) {
-    log("warn", `Could not create branch ${branchName}: ${(checkout.stderr || "").trim()}`);
+    log(
+      "warn",
+      `Could not switch to ${branchName}: ${(checkout.stderr || "").trim()}`
+    );
     return null;
   }
-  log("info", `Created branch ${branchName}`);
+  log("info", `Working on branch ${branchName}`);
   return branchName;
 }
 
@@ -372,67 +383,254 @@ async function writePackageJson(content) {
   return { applied: 1, failed: 0 };
 }
 
-async function applyTemplateFiles(files, { toVersion, appName, appPackage, createMissing }) {
-  let written = 0;
-  let skipped = 0;
-  let failed = 0;
+async function applyTemplateFiles(
+  files,
+  { fromVersion, toVersion, appName, appPackage, createMissing }
+) {
+  const stats = {
+    written: 0,
+    merged: 0,
+    conflicts: 0,
+    skipped: 0,
+    failed: 0,
+  };
 
   for (const file of files) {
     const relativePath = file.path;
     if (!relativePath) continue;
     if (file.binary) {
-      skipped++;
+      stats.skipped++;
       continue;
     }
 
     // package.json is handled by the dependency updater - overwriting it with
     // the template would drop the dependencies of the real project.
     if (relativePath === "package.json") {
-      skipped++;
+      stats.skipped++;
       continue;
     }
 
     const target = join(ROOT, relativePath);
     if (!isPathInside(ROOT, target)) {
-      failed++;
+      stats.failed++;
       log("error", `Refusing to write outside the project: ${relativePath}`);
       continue;
     }
 
-    // Only touch files the project actually has, unless we were asked to
-    // create the new ones as well.
-    if (!createMissing && !(await pathExists(target))) {
-      skipped++;
+    const exists = await pathExists(target);
+    if (!exists && !createMissing) {
+      stats.skipped++;
       continue;
     }
 
-    const sourceUrl = `${TEMPLATE_RAW_BASE}/${toVersion}/RnDiffApp/${relativePath}`;
     try {
-      const response = await fetch(sourceUrl, {
-        headers: { "User-Agent": "rn-safe-upgrade-bridge" },
-        signal: AbortSignal.timeout(20000),
-      });
-      if (!response.ok) {
-        skipped++;
-        log("warn", `Template file not available for ${relativePath}`);
-        continue;
-      }
-      const content = substituteAppDetails(
-        await response.text(),
+      const theirs = await fetchTemplateFile(
+        toVersion,
+        relativePath,
         appName,
         appPackage
       );
-      await mkdir(dirname(target), { recursive: true });
-      await writeFile(target, content, "utf8");
-      written++;
-      log("info", `Updated ${relativePath}`);
+      if (theirs === null) {
+        stats.skipped++;
+        log("warn", `Template file not available for ${relativePath}`);
+        continue;
+      }
+
+      if (!exists) {
+        await writeProjectFile(target, theirs);
+        stats.written++;
+        log("info", `Created ${relativePath}`);
+        continue;
+      }
+
+      const ours = await readFile(target, "utf8");
+
+      // The file the project was based on. Merging against it keeps the local
+      // customisations instead of throwing them away.
+      const base = await fetchTemplateFile(
+        fromVersion,
+        relativePath,
+        appName,
+        appPackage
+      );
+
+      if (base === null) {
+        await writeProjectFile(target, theirs);
+        stats.written++;
+        log("warn", `No base version available, ${relativePath} was replaced`);
+        continue;
+      }
+
+      if (ours === base) {
+        // Untouched by the project - the template version is the right one.
+        await writeProjectFile(target, theirs);
+        stats.written++;
+        log("info", `Updated ${relativePath}`);
+        continue;
+      }
+
+      const merged = mergeThreeWay(ours, base, theirs, {
+        ours: "your project",
+        base: `template ${fromVersion}`,
+        theirs: `template ${toVersion}`,
+      });
+      await writeProjectFile(target, merged.content);
+
+      if (merged.conflicts > 0) {
+        stats.conflicts++;
+        stats.merged++;
+        log(
+          "warn",
+          `Merged ${relativePath} with ${merged.conflicts} conflict${
+            merged.conflicts === 1 ? "" : "s"
+          } - the markers are in the file`
+        );
+      } else {
+        stats.merged++;
+        log("info", `Merged ${relativePath}`);
+      }
     } catch (error) {
-      failed++;
+      stats.failed++;
       log("error", `Could not update ${relativePath}: ${error.message}`);
     }
   }
 
-  return { written, skipped, failed };
+  return stats;
+}
+
+/**
+ * Removes the files that the new template version no longer contains. A file
+ * that the project modified is kept - deleting it would throw work away.
+ */
+async function applyTemplateDeletions(
+  files,
+  { fromVersion, appName, appPackage }
+) {
+  const stats = { deleted: 0, kept: 0, skipped: 0 };
+
+  for (const file of files) {
+    const relativePath = file.path;
+    if (!relativePath) continue;
+
+    const target = join(ROOT, relativePath);
+    if (!isPathInside(ROOT, target)) continue;
+    if (!(await pathExists(target))) {
+      stats.skipped++;
+      continue;
+    }
+
+    const base = await fetchTemplateFile(
+      fromVersion,
+      relativePath,
+      appName,
+      appPackage
+    );
+    const ours = await readFile(target, "utf8").catch(() => null);
+    if (ours === null) {
+      stats.skipped++;
+      continue;
+    }
+
+    if (base === null) {
+      stats.kept++;
+      log("warn", `Kept ${relativePath} - the template no longer has it`);
+      continue;
+    }
+
+    if (ours === base) {
+      await rm(target, { force: true });
+      stats.deleted++;
+      log("info", `Removed ${relativePath}`);
+    } else {
+      stats.kept++;
+      log("warn", `Kept ${relativePath} - it was changed in this project`);
+    }
+  }
+
+  return stats;
+}
+
+/**
+ * Fetches a file of the official template for a given React Native version.
+ */
+async function fetchTemplateFile(
+  version,
+  relativePath,
+  appName,
+  appPackage
+) {
+  const url = `${TEMPLATE_RAW_BASE}/${version}/RnDiffApp/${relativePath}`;
+  try {
+    const response = await fetch(url, {
+      headers: { "User-Agent": "rn-safe-upgrade-bridge" },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!response.ok) return null;
+    // The template files carry the reference app name and package - they are
+    // replaced so the merge compares the project with the template, not with
+    // the reference app.
+    return substituteAppDetails(await response.text(), appName, appPackage);
+  } catch {
+    return null;
+  }
+}
+
+async function writeProjectFile(target, content) {
+  await mkdir(dirname(target), { recursive: true });
+  await writeFile(target, content, "utf8");
+}
+
+/**
+ * Three way merge: the file of the project (ours), the file of the old
+ * template (base) and the file of the new template (theirs).
+ *
+ * `git merge-file` is used when git is available, because it is the exact
+ * algorithm git uses. Without git the new template wins, which is reported.
+ */
+function mergeThreeWay(ours, base, theirs, labels) {
+  const canUseGit = spawnSync("git", ["--version"], { encoding: "utf8" }).status === 0;
+  if (!canUseGit) {
+    return { content: theirs, conflicts: 0 };
+  }
+
+  const directory = mkdtempSync(join(tmpdir(), "rnsa-merge-"));
+  const oursFile = join(directory, "ours");
+  const baseFile = join(directory, "base");
+  const theirsFile = join(directory, "theirs");
+
+  try {
+    writeFileSync(oursFile, ours, "utf8");
+    writeFileSync(baseFile, base, "utf8");
+    writeFileSync(theirsFile, theirs, "utf8");
+
+    const args = ["merge-file", "-p", "--diff3"];
+    if (labels) {
+      args.push(
+        "-L",
+        labels.ours,
+        "-L",
+        labels.base,
+        "-L",
+        labels.theirs
+      );
+    }
+    args.push(oursFile, baseFile, theirsFile);
+
+    const result = spawnSync("git", args, { encoding: "utf8" });
+
+    if (result.status === undefined || result.status < 0) {
+      return { content: theirs, conflicts: 0 };
+    }
+
+    return {
+      content: result.stdout ?? theirs,
+      conflicts: result.status,
+    };
+  } catch {
+    return { content: theirs, conflicts: 0 };
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 }
 
 function buildAgentPrompt(plan) {
@@ -571,10 +769,20 @@ async function startJob(plan) {
     if (plan.filesToApply?.length) {
       log("info", `Applying ${plan.filesToApply.length} template files...`);
       job.templates = await applyTemplateFiles(plan.filesToApply, {
+        fromVersion: plan.fromVersion,
         toVersion: plan.toVersion,
         appName: plan.appName,
         appPackage: plan.appPackage,
         createMissing: Boolean(plan.createMissingFiles),
+      });
+    }
+
+    if (plan.filesToDelete?.length) {
+      log("info", `Removing ${plan.filesToDelete.length} files the template dropped...`);
+      job.deletions = await applyTemplateDeletions(plan.filesToDelete, {
+        fromVersion: plan.fromVersion,
+        appName: plan.appName,
+        appPackage: plan.appPackage,
       });
     }
 

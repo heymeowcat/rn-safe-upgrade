@@ -61,7 +61,7 @@ export default function AppHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-surface/85 backdrop-blur-md">
       <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="/" prefetch={false} className="flex items-center gap-2.5">
           <Logo />
           <span className="hidden sm:block">
             <span className="block text-[13.5px] font-semibold leading-4 text-fg">

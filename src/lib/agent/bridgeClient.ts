@@ -42,6 +42,15 @@ export interface BridgeJob {
   branch?: string | null;
   diff?: string | null;
   error?: string;
+  templates?: {
+    written: number;
+    merged: number;
+    conflicts: number;
+    skipped: number;
+    failed: number;
+  };
+  deletions?: { deleted: number; kept: number; skipped: number };
+  packageJson?: { applied: number; failed: number };
   result?: unknown;
   planSummary?: {
     fromVersion: string;
@@ -66,6 +75,7 @@ export interface UpgradePlanPayload {
   breakingChanges?: Array<{ area?: string; text: string; url?: string }>;
   requiredFiles?: string[];
   filesToApply?: Array<{ path: string; binary?: boolean }>;
+  filesToDelete?: Array<{ path: string }>;
   packageJsonContent?: string;
   useAgent?: boolean;
   createMissingFiles?: boolean;

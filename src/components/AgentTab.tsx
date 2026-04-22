@@ -465,6 +465,20 @@ export default function AgentTab() {
             <div ref={logEndRef} />
           </div>
 
+          {job?.templates && job.templates.conflicts > 0 ? (
+            <div className="border-t border-border px-4 py-3">
+              <Callout
+                tone="warning"
+                icon={<TriangleAlert className="h-4 w-4" />}
+                title={`${pluralize(job.templates.conflicts, "file")} could not be merged cleanly`}
+              >
+                The conflict markers are in the files. The agent can resolve
+                them, or you can fix them by hand - the template change and
+                your own change are both kept in the file.
+              </Callout>
+            </div>
+          ) : null}
+
           {job?.diff ? (
             <div className="border-t border-border px-4 py-3">
               <SectionLabel className="mb-2">Result</SectionLabel>
@@ -548,9 +562,11 @@ export default function AgentTab() {
                 {pluralize(plan.filesToApply.length, "template file")} to sync
               </SectionLabel>
               <p className="text-[12.5px] text-fg-muted">
-                The bridge copies the new template files over the ones in your
-                project, keeping your app name and package id intact.
-              </p>
+              The bridge merges the new template files into your project with a
+              three way merge: your own changes are kept, the template changes
+              are applied, and real conflicts are marked in the file. Files the
+              new template dropped are removed when you did not change them.
+            </p>
             </div>
           ) : null}
         </div>
