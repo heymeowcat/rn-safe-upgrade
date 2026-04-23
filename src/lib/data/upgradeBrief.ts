@@ -38,6 +38,7 @@ export interface UpgradeBrief {
   announcementUrl?: string;
   headline?: string;
   releaseNotesUrl?: string;
+  changelogUrl?: string;
   risk: RiskLevel;
   riskReasons: string[];
   requirements: {
@@ -282,7 +283,8 @@ export function buildUpgradeBrief({
     headline: versionInfo?.blogHeadline,
     releaseNotesUrl:
       releaseNotes?.url ??
-      `https://github.com/facebook/react-native/releases/tag/v${version}`,
+      `https://github.com/react/react-native/releases/tag/v${version}`,
+    changelogUrl: `https://github.com/react/react-native/blob/v${version}/CHANGELOG.md#v${version.replaceAll(".", "")}`,
     announcementUrl: versionInfo?.blogUrl,
     risk,
     riskReasons: reasons,

@@ -65,7 +65,7 @@ export default function Workspace() {
     <div className="min-h-screen bg-bg">
       <AppHeader onOpenCommandPalette={() => setPaletteOpen(true)} />
 
-      <div className="mx-auto flex w-full max-w-[1560px] gap-6 px-4 py-6 sm:px-6">
+      <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row">
         {/* Sidebar --------------------------------------------------------- */}
         <aside className="w-full shrink-0 space-y-4 lg:w-[296px]">
           <div className="lg:sticky lg:top-[76px] lg:space-y-4">

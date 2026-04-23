@@ -51,7 +51,7 @@ const DIST_TAGS_URL = "https://data.jsdelivr.com/v1/package/npm/react-native";
 const BLOG_INDEX_API =
   "https://api.github.com/repos/react/react-native-website/contents/website/blog";
 const GH_RELEASES_URL =
-  "https://api.github.com/repos/facebook/react-native/releases?per_page=60";
+  "https://api.github.com/repos/react/react-native/releases?per_page=60";
 
 const semverCompare = (a: string, b: string): number => {
   const parse = (v: string) => {

@@ -278,7 +278,7 @@ export async function fetchReleaseNotes(
 
   const result = await cachedFetchJson<GhReleaseDetail>(
     `gh-release-${clean}`,
-    `https://api.github.com/repos/facebook/react-native/releases/tags/v${clean}`,
+    `https://api.github.com/repos/react/react-native/releases/tags/v${clean}`,
     { ttl: 24 * 60 * 60 * 1000, timeout: 15000 }
   );
 

@@ -221,6 +221,21 @@ export default function BriefTab() {
                 </a>
               </Button>
             ) : null}
+            {brief?.changelogUrl ? (
+              <Button
+                size="sm"
+                variant="ghost"
+                icon={<ArrowUpRight className="h-3.5 w-3.5" aria-hidden />}
+              >
+                <a
+                  href={brief.changelogUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Changelog
+                </a>
+              </Button>
+            ) : null}
             <Button
               size="sm"
               variant="ghost"

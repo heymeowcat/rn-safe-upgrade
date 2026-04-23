@@ -19,7 +19,7 @@ const RELEASES_URL =
   "https://raw.githubusercontent.com/react-native-community/rn-diff-purge/master/RELEASES";
 const DIST_TAGS_URL = "https://data.jsdelivr.com/v1/package/npm/react-native";
 const GH_RELEASES_URL =
-  "https://api.github.com/repos/facebook/react-native/releases?per_page=80";
+  "https://api.github.com/repos/react/react-native/releases?per_page=80";
 const BLOG_INDEX_API =
   "https://api.github.com/repos/react/react-native-website/contents/website/blog";
 
