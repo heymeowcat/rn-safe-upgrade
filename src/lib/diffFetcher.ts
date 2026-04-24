@@ -63,7 +63,7 @@ export async function fetchRNDiff(
       throw new Error("Empty diff received");
     }
 
-    const files = parseDiff(diffText);
+    const files = parseDiff(diffText) as unknown as DiffFile[];
     const sorted = movePackageJsonToTop(files);
 
     return sorted;
@@ -230,7 +230,14 @@ export function removeAppPathPrefix(
   path: string,
   appName: string = DEFAULT_APP_NAME
 ): string {
-  return path.replace(new RegExp(`^${appName}/`), "");
+  return path
+    // The diff is generated against the reference app.
+    .replace(/^RnDiffApp\//, "")
+    .replace(new RegExp(`^${escapeRegExp(appName)}/`), "");
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /**

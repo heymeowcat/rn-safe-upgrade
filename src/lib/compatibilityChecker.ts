@@ -1,13 +1,104 @@
 import semver from "semver";
-import type { DependencyAnalysis, NpmPackageInfo } from "./types";
-import { fetchPackageInfo, getLatestVersion } from "./npmApi";
+import type { DependencyAnalysis, VersionInfo } from "./types";
+import {
+  fetchLatestVersion,
+  fetchPackageCatalog,
+  fetchPackageVersion,
+  type PackageCatalog,
+} from "./npmApi";
 
-const CONCURRENCY_LIMIT = 5;
+const CONCURRENCY_LIMIT = 4;
+/** How many candidate versions are inspected when a package has to move. */
+const CANDIDATE_LIMIT = 8;
 
+/** Peer ranges that are too loose to be useful for compatibility checks. */
+const WILDCARD_RANGES = new Set(["*", "latest", "x", ""]);
+
+function rangesIntersect(a: string, b: string): boolean | null {
+  if (!a || !b) return null;
+  if (WILDCARD_RANGES.has(a) || WILDCARD_RANGES.has(b)) return null;
+  try {
+    return semver.intersects(a, b, { includePrerelease: true });
+  } catch {
+    return null;
+  }
+}
+
+function satisfies(range: string, version: string): boolean | null {
+  if (!range || WILDCARD_RANGES.has(range)) return null;
+  try {
+    return semver.satisfies(version, range, { includePrerelease: true });
+  } catch {
+    return null;
+  }
+}
+
+function isStableVersion(version: string): boolean {
+  if (!semver.valid(version)) return false;
+  const prerelease = semver.prerelease(version);
+  if (!prerelease) return true;
+  const tag = String(prerelease[0] || "").toLowerCase();
+  return !(
+    tag.includes("nightly") ||
+    tag.includes("canary") ||
+    tag.includes("alpha") ||
+    tag.includes("beta") ||
+    tag.includes("rc") ||
+    tag.includes("dev") ||
+    tag.includes("next") ||
+    tag.includes("experimental")
+  );
+}
+
+/**
+ * Checks a single version of a package against the target React Native
+ * release and the React version it requires.
+ */
+function checkCompatibility(
+  peerDependencies: Record<string, string> | undefined,
+  targetRNVersion: string,
+  targetReactPeer?: string
+): { compatible: boolean; reason?: string } {
+  if (!peerDependencies) return { compatible: true };
+
+  const rnPeer = peerDependencies["react-native"];
+  if (rnPeer) {
+    const match = satisfies(rnPeer, targetRNVersion);
+    if (match === false) {
+      return {
+        compatible: false,
+        reason: `This version requires react-native ${rnPeer}, which does not include ${targetRNVersion}`,
+      };
+    }
+  }
+
+  const reactPeer = peerDependencies.react;
+  if (reactPeer && targetReactPeer) {
+    const overlap = rangesIntersect(reactPeer, targetReactPeer);
+    if (overlap === false) {
+      return {
+        compatible: false,
+        reason: `This version requires react ${reactPeer}, but React Native ${targetRNVersion} needs ${targetReactPeer}`,
+      };
+    }
+  }
+
+  return { compatible: true };
+}
+
+/**
+ * Analyses a single dependency against the target React Native version.
+ *
+ * The React version that the target release expects is resolved from the npm
+ * manifest of that release - it is never hardcoded, so new React Native
+ * versions are supported the day they ship.
+ */
 export async function analyzeDependency(
   packageName: string,
   currentVersion: string,
-  targetRNVersion: string
+  targetRNVersion: string,
+  targetReactPeer?: string,
+  targetTypesPeer?: string
 ): Promise<DependencyAnalysis> {
   if (packageName === "react-native") {
     return {
@@ -18,13 +109,27 @@ export async function analyzeDependency(
       needsUpdate: currentVersion !== targetRNVersion,
       hasBreakingChanges: false,
       compatibilityStatus: "compatible",
-      reason: "React Native core package",
+      reason: "React Native core package - set it to the target version",
     };
   }
 
-  const packageInfo = await fetchPackageInfo(packageName);
+  if (packageName === "react" && targetReactPeer) {
+    return analyzeReact(currentVersion, targetReactPeer, targetRNVersion);
+  }
 
-  if (!packageInfo) {
+  if (packageName === "@types/react" && targetTypesPeer) {
+    return analyzeReactTypes(currentVersion, targetTypesPeer, targetRNVersion);
+  }
+
+  const current = semver.coerce(currentVersion)?.version ?? currentVersion;
+
+  const [catalog, currentManifest, latest] = await Promise.all([
+    fetchPackageCatalog(packageName),
+    fetchPackageVersion(packageName, current),
+    fetchLatestVersion(packageName),
+  ]);
+
+  if (!catalog && !currentManifest) {
     return {
       package: packageName,
       currentVersion,
@@ -37,137 +142,187 @@ export async function analyzeDependency(
     };
   }
 
-  const latestVersion = getLatestVersion(packageInfo);
-
-  const recommendedVersion = findCompatibleVersion(
-    packageInfo,
+  const currentCheck = checkCompatibility(
+    currentManifest?.peerDependencies,
     targetRNVersion,
-    currentVersion
+    targetReactPeer
   );
 
-  return createAnalysis(
+  let recommended = current;
+  let recommendedManifest: VersionInfo | undefined = currentManifest ?? undefined;
+  let incompatibility: string | undefined;
+
+  if (!currentCheck.compatible) {
+    incompatibility = currentCheck.reason;
+    const candidate = await findCompatibleVersion(
+      packageName,
+      catalog,
+      current,
+      targetRNVersion,
+      targetReactPeer
+    );
+    if (candidate) {
+      recommended = candidate.version;
+      recommendedManifest = candidate.manifest ?? undefined;
+      incompatibility = undefined;
+    }
+  }
+
+  return buildAnalysis({
     packageName,
     currentVersion,
-    recommendedVersion,
-    latestVersion,
-    packageInfo,
-    targetRNVersion
-  );
+    current,
+    recommended,
+    recommendedManifest,
+    latest: latest ?? catalog?.tags?.latest ?? "unknown",
+    incompatibility,
+    targetRNVersion,
+    targetReactPeer,
+  });
 }
 
-function findCompatibleVersion(
-  packageInfo: NpmPackageInfo,
+/**
+ * Finds the closest newer version that is compatible with the target release.
+ */
+async function findCompatibleVersion(
+  packageName: string,
+  catalog: PackageCatalog | null,
+  current: string,
   targetRNVersion: string,
-  currentVersion: string
-): string {
-  const currentClean = semver.coerce(currentVersion)?.version || currentVersion;
-  
-  const allVersions = Object.keys(packageInfo.versions)
-    .filter((v) => {
-      if (!semver.valid(v)) return false;
-      const prerelease = semver.prerelease(v);
-      if (prerelease) {
-        const tag = String(prerelease[0] || "").toLowerCase();
-        if (tag.includes("nightly") || tag.includes("canary") || 
-            tag.includes("alpha") || tag.includes("beta") || 
-            tag.includes("rc") || tag.includes("dev") ||
-            tag.includes("next") || tag.includes("experimental")) {
-          return false;
-        }
-      }
-      return true;
-    })
-    .sort((a, b) => semver.rcompare(a, b));
+  targetReactPeer?: string
+): Promise<{ version: string; manifest?: VersionInfo } | null> {
+  if (!catalog) return null;
 
-  const isCompatibleWithRN = (version: string): boolean => {
-    const versionInfo = packageInfo.versions[version];
-    const peerDeps = versionInfo?.peerDependencies;
-    
-    // If no RN peer dep, consider it compatible
-    if (!peerDeps?.["react-native"]) {
-      return true;
-    }
-    
-    try {
-      if (!semver.satisfies(targetRNVersion, peerDeps["react-native"])) {
+  const candidates = catalog.versions
+    .filter(isStableVersion)
+    .filter((version) => {
+      try {
+        return semver.gt(version, current);
+      } catch {
         return false;
       }
-      
-      // Also check React compatibility
-      const reactPeerDep = peerDeps["react"];
-      if (reactPeerDep) {
-        const reactVersion = getReactVersionForRN(targetRNVersion);
-        if (reactVersion && !semver.satisfies(reactVersion, reactPeerDep)) {
-          return false;
-        }
-      }
-      
-      return true;
-    } catch {
-      return false;
-    }
-  };
+    })
+    .sort((a, b) => semver.compare(a, b))
+    .slice(0, CANDIDATE_LIMIT);
 
-  // If current version is already compatible, keep it
-  if (allVersions.includes(currentClean) && isCompatibleWithRN(currentClean)) {
-    return currentClean;
+  for (const version of candidates) {
+    const manifest = await fetchPackageVersion(packageName, version);
+    const check = checkCompatibility(
+      manifest?.peerDependencies,
+      targetRNVersion,
+      targetReactPeer
+    );
+    if (check.compatible) return { version, manifest: manifest ?? undefined };
   }
 
-  // Only look for UPGRADES (versions >= current), never downgrades
-  const upgradeVersions = allVersions.filter((v) => {
-    try {
-      return semver.gte(v, currentClean);
-    } catch {
-      return false;
-    }
-  });
-
-  // Sort upgrade candidates from lowest to highest (minimal upgrade first)
-  upgradeVersions.sort((a, b) => semver.compare(a, b));
-  
-  // Find the first compatible upgrade
-  for (const version of upgradeVersions) {
-    if (isCompatibleWithRN(version)) {
-      return version;
-    }
-  }
-
-  // No compatible upgrade found - NEVER downgrade, keep current version
-  // The user's current version may work or they need to find an alternative
-  return currentClean;
+  return null;
 }
 
-function getReactVersionForRN(rnVersion: string): string | null {
-  const rnToReact: Record<string, string> = {
-    "0.76": "18.3.1",
-    "0.75": "18.2.0",
-    "0.74": "18.2.0",
-    "0.73": "18.2.0",
-    "0.72": "18.2.0",
-    "0.71": "18.2.0",
-    "0.70": "18.1.0",
-    "0.69": "18.0.0",
-    "0.68": "17.0.2",
-  };
-
-  const majorMinor = rnVersion.split(".").slice(0, 2).join(".");
-  return rnToReact[majorMinor] || null;
-}
-
-function createAnalysis(
-  packageName: string,
+/**
+ * React itself has no peer dependency on React Native, so the requirement
+ * comes from the React Native release that is being targeted.
+ */
+function analyzeReact(
   currentVersion: string,
-  recommendedVersion: string,
-  latestVersion: string,
-  packageInfo: NpmPackageInfo,
+  targetReactPeer: string,
   targetRNVersion: string
 ): DependencyAnalysis {
-  const current = semver.coerce(currentVersion)?.version || currentVersion;
-  const recommended =
-    semver.coerce(recommendedVersion)?.version || recommendedVersion;
+  const current = semver.coerce(currentVersion)?.version ?? currentVersion;
+  const minimum = semver.minVersion(targetReactPeer);
+  const target = minimum?.version ?? targetReactPeer.replace(/^[\^~>=<\s]*/, "");
+  const compatible = satisfies(targetReactPeer, currentVersion);
 
+  if (compatible === false) {
+    return {
+      package: "react",
+      currentVersion,
+      recommendedVersion: target,
+      latestVersion: target,
+      needsUpdate: true,
+      hasBreakingChanges: true,
+      compatibilityStatus: "warning",
+      reason: `React Native ${targetRNVersion} requires react ${targetReactPeer} - React has to move with it`,
+      changelogUrl: "https://www.npmjs.com/package/react?activeTab=versions",
+    };
+  }
+
+  return {
+    package: "react",
+    currentVersion,
+    recommendedVersion: current,
+    latestVersion: target,
+    needsUpdate: false,
+    hasBreakingChanges: false,
+    compatibilityStatus: "compatible",
+    reason: `Matches the react ${targetReactPeer} range required by React Native ${targetRNVersion}`,
+    changelogUrl: "https://www.npmjs.com/package/react?activeTab=versions",
+  };
+}
+
+/**
+ * The React type definitions have to match the React version that ships with
+ * the target React Native release.
+ */
+function analyzeReactTypes(
+  currentVersion: string,
+  targetTypesPeer: string,
+  targetRNVersion: string
+): DependencyAnalysis {
+  const current = semver.coerce(currentVersion)?.version ?? currentVersion;
+  const minimum = semver.minVersion(targetTypesPeer);
+  const target = minimum?.version ?? targetTypesPeer.replace(/^[\^~>=<\s]*/, "");
+  const compatible = satisfies(targetTypesPeer, currentVersion);
+
+  if (compatible === false) {
+    return {
+      package: "@types/react",
+      currentVersion,
+      recommendedVersion: target,
+      latestVersion: target,
+      needsUpdate: true,
+      hasBreakingChanges: true,
+      compatibilityStatus: "warning",
+      reason: `React Native ${targetRNVersion} ships with @types/react ${targetTypesPeer} - the type definitions have to match React`,
+      changelogUrl: "https://www.npmjs.com/package/@types/react?activeTab=versions",
+    };
+  }
+
+  return {
+    package: "@types/react",
+    currentVersion,
+    recommendedVersion: current,
+    latestVersion: target,
+    needsUpdate: false,
+    hasBreakingChanges: false,
+    compatibilityStatus: "compatible",
+    reason: `Matches the @types/react ${targetTypesPeer} range required by React Native ${targetRNVersion}`,
+    changelogUrl: "https://www.npmjs.com/package/@types/react?activeTab=versions",
+  };
+}
+
+function buildAnalysis({
+  packageName,
+  currentVersion,
+  current,
+  recommended,
+  recommendedManifest,
+  latest,
+  incompatibility,
+  targetRNVersion,
+  targetReactPeer,
+}: {
+  packageName: string;
+  currentVersion: string;
+  current: string;
+  recommended: string;
+  recommendedManifest?: VersionInfo;
+  latest: string;
+  incompatibility?: string;
+  targetRNVersion: string;
+  targetReactPeer?: string;
+}): DependencyAnalysis {
   const needsUpdate = current !== recommended;
-  
+
   let hasBreakingChanges = false;
   try {
     hasBreakingChanges =
@@ -178,34 +333,48 @@ function createAnalysis(
 
   let compatibilityStatus: DependencyAnalysis["compatibilityStatus"] =
     "compatible";
-  let reason = "Compatible with target React Native version";
+  let reason = "Compatible with the target React Native version";
 
-  const recInfo = packageInfo.versions[recommendedVersion];
-  const peerDeps = recInfo?.peerDependencies;
-
-  if (peerDeps?.["react-native"]) {
-    try {
-      if (!semver.satisfies(targetRNVersion, peerDeps["react-native"])) {
-        compatibilityStatus = "warning";
-        reason = `Peer dependency requires react-native ${peerDeps["react-native"]}`;
+  if (incompatibility) {
+    compatibilityStatus = "incompatible";
+    reason = incompatibility;
+  } else {
+    const peerDeps = recommendedManifest?.peerDependencies;
+    const rnPeer = peerDeps?.["react-native"];
+    if (rnPeer) {
+      const match = satisfies(rnPeer, targetRNVersion);
+      if (match === false) {
+        compatibilityStatus = "incompatible";
+        reason = `This version requires react-native ${rnPeer}, which does not include ${targetRNVersion}`;
       }
-    } catch {
-      // Invalid semver range
+    }
+    if (compatibilityStatus !== "incompatible" && peerDeps?.react && targetReactPeer) {
+      const overlap = rangesIntersect(peerDeps.react, targetReactPeer);
+      if (overlap === false) {
+        compatibilityStatus = "incompatible";
+        reason = `This version requires react ${peerDeps.react}, but React Native ${targetRNVersion} needs ${targetReactPeer}`;
+      }
     }
   }
 
-  if (hasBreakingChanges) {
-    compatibilityStatus = "warning";
-    reason = `Major version change from ${semver.major(current)} to ${semver.major(recommended)} - review changelog`;
-  } else if (needsUpdate) {
-    reason = "Updated for compatibility";
+  if (compatibilityStatus !== "incompatible") {
+    if (hasBreakingChanges) {
+      compatibilityStatus = "warning";
+      reason = `Major version change from ${semver.major(current)} to ${semver.major(
+        recommended
+      )} - review the changelog before upgrading`;
+    } else if (needsUpdate) {
+      reason = "Updated for compatibility with the target React Native version";
+    } else {
+      reason = "Already compatible with the target React Native version";
+    }
   }
 
   return {
     package: packageName,
     currentVersion,
-    recommendedVersion,
-    latestVersion,
+    recommendedVersion: recommended,
+    latestVersion: latest,
     needsUpdate,
     hasBreakingChanges,
     compatibilityStatus,
@@ -228,18 +397,15 @@ async function runWithConcurrency<T, R>(
     while (currentIndex < items.length) {
       const index = currentIndex++;
       const item = items[index];
-      
+
       try {
         results[index] = await fn(item, index);
       } catch (error) {
         console.error(`Error processing item at index ${index}:`, error);
-        throw error;
       }
-      
+
       completedCount++;
-      if (onProgress) {
-        onProgress(completedCount, items.length);
-      }
+      onProgress?.(completedCount, items.length);
     }
   }
 
@@ -254,21 +420,33 @@ async function runWithConcurrency<T, R>(
 export async function analyzeAllDependencies(
   dependencies: Record<string, string>,
   targetRNVersion: string,
-  onProgress?: (current: number, total: number) => void
+  options: {
+    onProgress?: (current: number, total: number) => void;
+    targetReactPeer?: string;
+    targetTypesPeer?: string;
+    signal?: AbortSignal;
+  } = {}
 ): Promise<DependencyAnalysis[]> {
   const entries = Object.entries(dependencies);
-  
-  if (onProgress) {
-    onProgress(0, entries.length);
-  }
+
+  options.onProgress?.(0, entries.length);
 
   const results = await runWithConcurrency(
     entries,
     async ([packageName, version]) => {
-      return analyzeDependency(packageName, version, targetRNVersion);
+      if (options.signal?.aborted) {
+        throw new Error("Aborted");
+      }
+      return analyzeDependency(
+        packageName,
+        version,
+        targetRNVersion,
+        options.targetReactPeer,
+        options.targetTypesPeer
+      );
     },
     CONCURRENCY_LIMIT,
-    onProgress
+    options.onProgress
   );
 
   return results;

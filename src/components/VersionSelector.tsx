@@ -1,258 +1,393 @@
 "use client";
-import { useState, useEffect, useRef, useMemo } from "react";
-import { ArrowRight, Loader2, Search } from "lucide-react";
 
-interface VersionSelectorProps {
-  currentVersion: string;
-  targetVersion: string;
-  onCurrentChange: (version: string) => void;
-  onTargetChange: (version: string) => void;
-}
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArrowLeftRight,
+  Check,
+  ChevronDown,
+  Search,
+  Sparkles,
+} from "lucide-react";
+import { useUpgradeSession } from "@/lib/hooks/useUpgradeSession";
+import { semverCompare, type RnVersionInfo } from "@/lib/data/rnCatalog";
+import { cn, formatDate, formatRelativeTime } from "@/lib/utils";
+import { Badge, Button, Kbd } from "./ui";
 
-interface RNVersion {
-  version: string;
-  label: string;
-  isLatest?: boolean;
-}
-
-const VersionCombobox = ({
-  value,
-  onChange,
-  versions,
-  placeholder,
-}: {
+interface VersionComboboxProps {
   value: string;
+  options: RnVersionInfo[];
   onChange: (version: string) => void;
-  versions: RNVersion[];
-  placeholder: string;
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
+  label: string;
+  align?: "left" | "right";
+  exclude?: string;
+}
+
+function VersionCombobox({
+  value,
+  options,
+  onChange,
+  label,
+  align = "left",
+  exclude,
+}: VersionComboboxProps) {
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredVersions = useMemo(() => {
-    if (!query) return versions;
-    return versions.filter((v) =>
-      v.version.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [query, versions]);
+  const filtered = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    const base = term
+      ? options.filter(
+          (option) =>
+            option.version.includes(term) ||
+            option.blogHeadline?.toLowerCase().includes(term)
+        )
+      : options;
+
+    // Group by minor line so "0.88.x" stays together.
+    const groups = new Map<string, RnVersionInfo[]>();
+    for (const option of base) {
+      const key = option.version.split(".").slice(0, 2).join(".");
+      const list = groups.get(key) ?? [];
+      list.push(option);
+      groups.set(key, list);
+    }
+    return Array.from(groups.values()).flat();
+  }, [options, query]);
 
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
+    if (!open) return;
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+        setQuery("");
       }
     };
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, [open]);
 
   useEffect(() => {
     setActiveIndex(-1);
-  }, [filteredVersions]);
+  }, [query]);
 
-  const handleSelect = (version: string) => {
+  useEffect(() => {
+    if (!open) return;
+    const element = listRef.current?.querySelector<HTMLElement>(
+      `[data-index="${activeIndex}"]`
+    );
+    element?.scrollIntoView({ block: "nearest" });
+  }, [activeIndex, open]);
+
+  // The filter is focused when the list opens, so the keyboard works right
+  // away without stealing the focus on the page.
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  const selected = options.find((option) => option.version === value);
+
+  const commit = (version: string) => {
+    if (version === exclude) return;
     onChange(version);
+    setOpen(false);
     setQuery("");
-    setIsOpen(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setActiveIndex((prev) => Math.min(prev + 1, filteredVersions.length - 1));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActiveIndex((prev) => Math.max(prev - 1, 0));
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (activeIndex !== -1 && filteredVersions[activeIndex]) {
-        handleSelect(filteredVersions[activeIndex].version);
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (!open) {
+      if (event.key === "Enter" || event.key === "ArrowDown" || event.key === " ") {
+        event.preventDefault();
+        setOpen(true);
       }
-    } else if (e.key === "Escape") {
-      setIsOpen(false);
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveIndex((index) => Math.min(index + 1, filtered.length - 1));
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex((index) => Math.max(index - 1, 0));
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      if (activeIndex >= 0 && filtered[activeIndex]) {
+        commit(filtered[activeIndex].version);
+      }
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setOpen(false);
+      setQuery("");
     }
   };
 
   return (
-    <div className="relative w-full" ref={containerRef}>
-      <div className="relative">
-        <input
-          type="text"
-          value={query || value}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            if (!isOpen) setIsOpen(true);
-            if (value && e.target.value !== value) {
-              onChange("");
-            }
-          }}
-          onFocus={() => setIsOpen(true)}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base pr-10"
-        />
-        <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
-          <Search className="w-5 h-5 text-gray-400" />
-        </div>
-      </div>
+    <div className="relative min-w-0" ref={containerRef}>
+      <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.05em] text-fg-subtle">
+        {label}
+      </span>
 
-      {isOpen && (
-        <ul className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-          {filteredVersions.length > 0 ? (
-            filteredVersions.map((version, index) => (
-              <li
-                key={version.version}
-                onClick={() => handleSelect(version.version)}
-                className={`px-4 py-2 cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  index === activeIndex ? "bg-blue-50 dark:bg-blue-900/50" : ""
-                }`}
-              >
-                {version.label} {version.isLatest ? " (latest)" : ""}
-              </li>
-            ))
-          ) : (
-            <li className="px-4 py-2 text-gray-500">No versions found.</li>
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        onKeyDown={handleKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className={cn(
+          "flex h-10 w-full items-center justify-between gap-2 rounded-[8px] border border-border bg-surface px-3 text-left transition-colors duration-150",
+          "hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-accent",
+          open && "border-accent-border ring-2 ring-accent/20"
+        )}
+      >
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="truncate font-mono text-[13.5px] font-medium text-fg">
+            {value || "Select version"}
+          </span>
+          {selected?.releasedAt ? (
+            <span className="hidden truncate text-[11.5px] text-fg-subtle sm:inline">
+              {formatRelativeTime(selected.releasedAt)}
+            </span>
+          ) : null}
+        </span>
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 shrink-0 text-fg-subtle transition-transform duration-150",
+            open && "rotate-180"
           )}
-        </ul>
-      )}
+          aria-hidden
+        />
+      </button>
+
+      {open ? (
+        <div
+          className={cn(
+            "absolute z-50 mt-1.5 w-[min(24rem,calc(100vw-3rem))] overflow-hidden rounded-[10px] border border-border bg-surface shadow-[var(--shadow-lg)]",
+            align === "right" ? "right-0" : "left-0"
+          )}
+        >
+          <div className="flex items-center gap-2 border-b border-border px-3">
+            <Search className="h-3.5 w-3.5 shrink-0 text-fg-subtle" aria-hidden />
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Filter versions…"
+              className="h-9 w-full bg-transparent text-[13px] text-fg outline-none placeholder:text-fg-subtle"
+              aria-label="Filter versions"
+            />
+          </div>
+
+          <ul
+            ref={listRef}
+            role="listbox"
+            aria-label={label}
+            className="max-h-72 overflow-y-auto p-1"
+          >
+            {filtered.length === 0 ? (
+              <li className="px-3 py-6 text-center text-[12.5px] text-fg-subtle">
+                No version matches “{query}”.
+              </li>
+            ) : (
+              filtered.map((option, index) => {
+                const isActive = index === activeIndex;
+                const isSelected = option.version === value;
+                const previous =
+                  index > 0 ? filtered[index - 1].version : undefined;
+                const newLine =
+                  !previous ||
+                  previous.split(".").slice(0, 2).join(".") !==
+                    option.version.split(".").slice(0, 2).join(".");
+
+                return (
+                  <li key={option.version}>
+                    {newLine ? (
+                      <div className="px-2.5 pb-1 pt-2.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-fg-subtle">
+                        {option.version.split(".").slice(0, 2).join(".")}
+                      </div>
+                    ) : null}
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={isSelected}
+                      data-index={index}
+                      onMouseEnter={() => setActiveIndex(index)}
+                      onClick={() => commit(option.version)}
+                      className={cn(
+                        "flex w-full items-center justify-between gap-2 rounded-[6px] px-2.5 py-1.5 text-left transition-colors duration-100",
+                        isActive ? "bg-surface-3" : "bg-transparent"
+                      )}
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span
+                          className={cn(
+                            "font-mono text-[13px]",
+                            isSelected
+                              ? "font-semibold text-accent"
+                              : "text-fg"
+                          )}
+                        >
+                          {option.version}
+                        </span>
+                        {option.channels?.length ? (
+                          <Badge tone="accent">
+                            <Sparkles className="h-3 w-3" aria-hidden />
+                            {option.channels[0]}
+                          </Badge>
+                        ) : null}
+                        {option.prerelease ? (
+                          <Badge tone="warning">pre</Badge>
+                        ) : null}
+                      </span>
+                      <span className="flex shrink-0 items-center gap-2">
+                        {option.releasedAt ? (
+                          <span className="text-[11px] text-fg-subtle">
+                            {formatDate(option.releasedAt)}
+                          </span>
+                        ) : null}
+                        {isSelected ? (
+                          <Check className="h-3.5 w-3.5 text-accent" aria-hidden />
+                        ) : null}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })
+            )}
+          </ul>
+        </div>
+      ) : null}
     </div>
   );
-};
+}
 
-export default function VersionSelector({
-  currentVersion,
-  targetVersion,
-  onCurrentChange,
-  onTargetChange,
-}: VersionSelectorProps) {
-  const [versions, setVersions] = useState<RNVersion[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function VersionSelector() {
+  const {
+    catalog,
+    catalogLoading,
+    fromVersion,
+    toVersion,
+    setFromVersion,
+    setToVersion,
+    swapVersions,
+    includePrerelease,
+    setIncludePrerelease,
+    latestStable,
+    reactPeer,
+    toVersionInfo,
+  } = useUpgradeSession();
 
-  useEffect(() => {
-    const fetchReactNativeVersions = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch(
-          "https://raw.githubusercontent.com/react-native-community/rn-diff-purge/master/RELEASES"
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch RELEASES: ${response.status}`);
-        }
-        const text = await response.text();
-        const versionList = text
-          .split("\n")
-          .map((v) => v.trim())
-          .filter((v) => v.length > 0)
-          .sort((a, b) => (a < b ? 1 : -1));
+  const versions = useMemo(
+    () => (catalog?.versions ?? []).filter((v) => includePrerelease || !v.prerelease),
+    [catalog, includePrerelease]
+  );
 
-        const formattedVersions: RNVersion[] = versionList.map(
-          (version, index) => ({
-            version,
-            label: version,
-            isLatest: index === 0,
-          })
-        );
-        setVersions(formattedVersions);
-      } catch (err) {
-        console.error("Error fetching RN versions:", err);
-        setError("Failed to load React Native versions from source.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReactNativeVersions();
-  }, []);
+  // The target has to be newer than the source, and the other way around.
+  const toOptions = useMemo(
+    () =>
+      versions.filter(
+        (version) =>
+          version.version !== fromVersion &&
+          semverCompare(version.version, fromVersion) > 0
+      ),
+    [versions, fromVersion]
+  );
+  const fromOptions = useMemo(
+    () =>
+      versions.filter(
+        (version) =>
+          version.version !== toVersion &&
+          semverCompare(version.version, toVersion) < 0
+      ),
+    [versions, toVersion]
+  );
 
-  const targetVersions = useMemo(() => {
-    if (!currentVersion) return versions;
-    const currentIndex = versions.findIndex((v) => v.version === currentVersion);
-    if (currentIndex === -1) return versions;
-    // versions is sorted descending (latest first), so newer versions have smaller indices
-    return versions.slice(0, currentIndex);
-  }, [currentVersion, versions]);
-
-  // Clear target version if it's no longer newer than current version
-  useEffect(() => {
-    if (currentVersion && targetVersion) {
-      const currentIndex = versions.findIndex((v) => v.version === currentVersion);
-      const targetIndex = versions.findIndex((v) => v.version === targetVersion);
-      if (
-        currentIndex !== -1 &&
-        targetIndex !== -1 &&
-        targetIndex >= currentIndex
-      ) {
-        onTargetChange("");
-      }
-    }
-  }, [currentVersion, targetVersion, versions, onTargetChange]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-10">
-        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-      </div>
-    );
-  }
+  const targetIsLatest = latestStable && toVersion === latestStable;
 
   return (
-    <div className="space-y-6">
-      {error && (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
-            <span>⚠️</span>
-            <span>{error}</span>
-          </div>
-        </div>
-      )}
+    <div className="space-y-3">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2 sm:gap-3">
+        <VersionCombobox
+          label="From"
+          value={fromVersion}
+          options={fromOptions}
+          onChange={setFromVersion}
+          exclude={toVersion}
+        />
 
-      <div className="grid md:grid-cols-[1fr_auto_1fr] gap-6 items-end">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            What's your current react-native version?
-          </label>
-          <VersionCombobox
-            value={currentVersion}
-            onChange={onCurrentChange}
-            versions={versions}
-            placeholder="Select or type a version..."
-          />
-        </div>
+        <button
+          type="button"
+          onClick={swapVersions}
+          title="Swap versions"
+          aria-label="Swap versions"
+          className="mb-1 hidden h-8 w-8 items-center justify-center rounded-[7px] border border-border bg-surface text-fg-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg sm:flex"
+        >
+          <ArrowLeftRight className="h-3.5 w-3.5" aria-hidden />
+        </button>
 
-        <div className="hidden md:flex justify-center pb-4">
-          <ArrowRight className="w-6 h-6 text-gray-400" />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            What's the version you want to upgrade to?
-          </label>
-          <VersionCombobox
-            value={targetVersion}
-            onChange={onTargetChange}
-            versions={targetVersions}
-            placeholder="Select or type a version..."
-          />
-        </div>
+        <VersionCombobox
+          label="To"
+          value={toVersion}
+          options={toOptions}
+          onChange={setToVersion}
+          align="right"
+          exclude={fromVersion}
+        />
       </div>
 
-      {currentVersion && targetVersion && currentVersion !== targetVersion && (
-        <div className="flex items-center justify-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm">
-          <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">
-            {currentVersion}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] text-fg-muted">
+        <label className="inline-flex cursor-pointer items-center gap-1.5">
+          <input
+            type="checkbox"
+            checked={includePrerelease}
+            onChange={(event) => setIncludePrerelease(event.target.checked)}
+            className="h-3.5 w-3.5 rounded-[4px] border-border accent-[var(--accent)]"
+          />
+          Include prereleases
+        </label>
+
+        {catalogLoading ? (
+          <span className="text-fg-subtle">Loading versions…</span>
+        ) : null}
+
+        {!targetIsLatest && latestStable ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setToVersion(latestStable)}
+            icon={<Sparkles className="h-3.5 w-3.5" aria-hidden />}
+          >
+            Jump to {latestStable}
+          </Button>
+        ) : null}
+
+        {reactPeer ? (
+          <span className="ml-auto flex items-center gap-1.5">
+            <span className="text-fg-subtle">Requires react</span>
+            <code className="rounded-[4px] bg-surface-2 px-1.5 py-0.5 font-mono text-[11.5px] text-fg">
+              {reactPeer}
+            </code>
           </span>
-          <ArrowRight className="w-4 h-4 text-gray-400" />
-          <span className="font-mono font-semibold text-violet-600 dark:text-violet-400">
-            {targetVersion}
+        ) : null}
+
+        {toVersionInfo?.releasedAt ? (
+          <span className="hidden items-center gap-1 text-fg-subtle md:inline-flex">
+            released {formatDate(toVersionInfo.releasedAt)}
           </span>
-        </div>
-      )}
+        ) : null}
+      </div>
+
+      <p className="sr-only" aria-live="polite">
+        Upgrading from {fromVersion || "no version"} to {toVersion || "no version"}
+        {toVersionInfo?.reactPeer ? `, requires react ${toVersionInfo.reactPeer}` : ""}
+      </p>
+
+      <p className="hidden text-[11.5px] text-fg-subtle lg:block">
+        Tip: press <Kbd>⌘</Kbd> <Kbd>K</Kbd> to jump anywhere.
+      </p>
     </div>
   );
 }

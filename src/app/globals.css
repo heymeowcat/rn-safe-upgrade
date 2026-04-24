@@ -1,272 +1,407 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+   A single neutral scale + one accent. Semantic tokens flip with the theme so
+   components never need `dark:` variants for surface colours.
+--------------------------------------------------------------------------- */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #fbfbfc;
+  --bg-subtle: #f4f5f7;
+  --surface: #ffffff;
+  --surface-2: #f7f8fa;
+  --surface-3: #eef0f3;
+  --border: #e3e6ea;
+  --border-strong: #cfd4da;
+  --fg: #14181f;
+  --fg-muted: #5b6472;
+  --fg-subtle: #8b95a4;
+
+  --accent: #2f5fd8;
+  --accent-hover: #264ec0;
+  --accent-fg: #ffffff;
+  --accent-subtle: #eaf0fe;
+  --accent-border: #c3d3f8;
+
+  --success: #0f7b56;
+  --success-subtle: #e6f6ef;
+  --success-border: #b6e0cd;
+
+  --warning: #9a6207;
+  --warning-subtle: #fdf4e3;
+  --warning-border: #ecd6a8;
+
+  --danger: #b42318;
+  --danger-subtle: #fdeceb;
+  --danger-border: #f2c2bd;
+
+  --info: #0b6a8f;
+  --info-subtle: #e6f4fa;
+  --info-border: #b7dcec;
+
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.05);
+  --shadow-md: 0 4px 12px -2px rgb(16 24 40 / 0.08), 0 2px 4px -2px rgb(16 24 40 / 0.05);
+  --shadow-lg: 0 16px 40px -12px rgb(16 24 40 / 0.18);
+
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 12px;
+}
+
+.dark {
+  --bg: #0a0c10;
+  --bg-subtle: #0e1116;
+  --surface: #12151b;
+  --surface-2: #171b22;
+  --surface-3: #1e232b;
+  --border: #242a33;
+  --border-strong: #333b46;
+  --fg: #e8ecf1;
+  --fg-muted: #98a2b3;
+  --fg-subtle: #6b7686;
+
+  --accent: #5b8def;
+  --accent-hover: #7aa2f4;
+  --accent-fg: #0a0c10;
+  --accent-subtle: #16213a;
+  --accent-border: #2b3d63;
+
+  --success: #4ecfa1;
+  --success-subtle: #0e2419;
+  --success-border: #1d4a36;
+
+  --warning: #e5b25d;
+  --warning-subtle: #251b0c;
+  --warning-border: #4a3618;
+
+  --danger: #f28b82;
+  --danger-subtle: #2a1315;
+  --danger-border: #52252a;
+
+  --info: #62c1e8;
+  --info-subtle: #0c2029;
+  --info-border: #1b3d4d;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 16px 40px -12px rgb(0 0 0 / 0.6);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-accent-border: var(--accent-border);
+
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-success-border: var(--success-border);
+
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-warning-border: var(--warning-border);
+
+  --color-danger: var(--danger);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-danger-border: var(--danger-border);
+
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+  --color-info-border: var(--info-border);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-jet), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-app: var(--radius);
+  --radius-app-sm: var(--radius-sm);
+  --radius-app-lg: var(--radius-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
+::selection {
+  background: var(--accent-subtle);
+  color: var(--fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Scrollbars -------------------------------------------------------------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
-::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
+*::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 5px;
+*::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--fg-subtle);
 }
 
-/* Animations */
-@keyframes fadeIn {
+/* ---------------------------------------------------------------------------
+   Utilities
+--------------------------------------------------------------------------- */
+
+@utility surface-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+@utility hairline {
+  border-bottom: 1px solid var(--border);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes rnsa-fade-in {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(4px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  to {
+@keyframes rnsa-pulse {
+  0%,
+  100% {
     opacity: 1;
-    transform: translateX(0);
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes rnsa-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
   }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out;
+  animation: rnsa-fade-in 180ms ease-out both;
 }
 
-.animate-slide-in {
-  animation: slideIn 0.4s ease-out;
+.animate-pulse-soft {
+  animation: rnsa-pulse 1.6s ease-in-out infinite;
 }
 
-/* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, transform, opacity;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--surface-3) 37%,
+    var(--surface-2) 63%
+  );
+  background-size: 200% 100%;
+  animation: rnsa-shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-sm);
 }
 
-/* ============================================
-   React Diff View - Layout Fix
-   ============================================ */
-
-.diff-container-fixed {
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-  font-size: 13px;
-  width: 100%;
-  overflow-x: auto;
-  background-color: #0d1117;
-  /* Dark background for the container */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-/* Force the table to behave correctly */
-.diff-container-fixed table {
+/* ---------------------------------------------------------------------------
+   Diff viewer theme
+   react-diff-view ships its own stylesheet; we only re-theme it with tokens.
+--------------------------------------------------------------------------- */
+
+:root {
+  --diff-background-color: var(--surface);
+  --diff-text-color: var(--fg);
+  --diff-font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --diff-gutter-insert-background-color: var(--success-subtle);
+  --diff-gutter-delete-background-color: var(--danger-subtle);
+  --diff-code-insert-background-color: var(--success-subtle);
+  --diff-code-delete-background-color: var(--danger-subtle);
+  --diff-code-insert-edit-background-color: color-mix(
+    in srgb,
+    var(--success) 24%,
+    transparent
+  );
+  --diff-code-delete-edit-background-color: color-mix(
+    in srgb,
+    var(--danger) 24%,
+    transparent
+  );
+  --diff-selection-background-color: var(--accent-subtle);
+  --diff-omit-gutter-line-color: var(--danger);
+}
+
+.dark {
+  --diff-background-color: var(--surface);
+  --diff-text-color: var(--fg);
+  --diff-gutter-insert-background-color: var(--success-subtle);
+  --diff-gutter-delete-background-color: var(--danger-subtle);
+  --diff-code-insert-background-color: var(--success-subtle);
+  --diff-code-delete-background-color: var(--danger-subtle);
+  --diff-code-insert-edit-background-color: color-mix(
+    in srgb,
+    var(--success) 28%,
+    transparent
+  );
+  --diff-code-delete-edit-background-color: color-mix(
+    in srgb,
+    var(--danger) 28%,
+    transparent
+  );
+}
+
+.diff-view {
+  font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.diff-view table {
   width: 100%;
   table-layout: fixed;
-  /* This is crucial for widths to be respected */
   border-collapse: collapse;
 }
 
-/* Reset padding on all cells and set text wrapping */
-.diff-container-fixed td {
+.diff-view td {
   padding: 0;
-  /* KEY CHANGE: Remove all padding from table cells */
   vertical-align: top;
-  white-space: pre-wrap;
-  word-break: break-all;
 }
 
-/* Gutter (line number) cells */
 .diff-gutter {
-  width: 50px;
-  min-width: 50px;
-  padding: 0 10px;
-  /* Give line numbers horizontal padding */
+  width: 48px;
+  min-width: 48px;
+  padding: 0 8px;
   text-align: right;
   user-select: none;
+  background-color: var(--surface-2);
+  color: var(--fg-subtle);
+  border-right: 1px solid var(--border);
 }
 
-/* Code content cells */
-.diff-code {
-  width: calc(50% - 50px);
-  /* Define the column width */
-}
-
-/* The element containing the actual text line */
 .diff-line {
   padding: 0 10px;
-  /* KEY CHANGE: Apply padding here, inside the cell */
+  background-color: var(--surface);
+  color: var(--fg);
 }
 
-
-/* ============================================
-   React Diff View - Color Theme
-   ============================================ */
-
-/* Light mode overrides */
-@media (prefers-color-scheme: light) {
-  .diff-container-fixed {
-    background-color: #fff;
-  }
-
-  .diff-gutter {
-    background-color: #f6f8fa;
-    color: #57606a;
-    border-right: 1px solid #d0d7de;
-  }
-
-  .diff-line {
-    background-color: #fff;
-    color: #171717;
-  }
+.diff-code {
+  width: calc(50% - 48px);
 }
 
-/* Light mode colors */
-.diff-gutter-insert {
-  background-color: #ccffd8;
-}
-
-.diff-gutter-delete {
-  background-color: #ffd7d5;
-}
-
-.diff-code-insert {
-  background-color: #e6ffec;
-}
-
-.diff-code-delete {
-  background-color: #ffebe9;
-}
-
-.diff-code-insert .diff-code-edit {
-  background-color: #abf2bc;
-}
-
-.diff-code-delete .diff-code-edit {
-  background-color: #ffcecb;
-}
-
-/* Dark mode diff styles */
-@media (prefers-color-scheme: dark) {
-  .diff-gutter {
-    background-color: #161b22;
-    color: #8b949e;
-    border-right: 1px solid #30363d;
-  }
-
-  .diff-line {
-    color: #e6edf3;
-    background-color: #0d1117;
-  }
-
-  .diff-gutter-insert {
-    background-color: #033a16;
-  }
-
-  .diff-gutter-delete {
-    background-color: #5a1e1e;
-  }
-
-  .diff-code-insert {
-    background-color: #033a16;
-    color: #aff5b4;
-  }
-
-  .diff-code-delete {
-    background-color: #5a1e1e;
-    color: #ffdcd7;
-  }
-
-  .diff-code-insert .diff-code-edit {
-    background-color: #0d4429;
-  }
-
-  .diff-code-delete .diff-code-edit {
-    background-color: #8b2e2e;
-  }
-
-  .diff-code-omit {
-    background-color: #161b22;
-    color: #8b949e;
-  }
-}
-
-/* Hunk headers */
 .diff-hunk-header {
-  background-color: #f6f8fa;
-  color: #57606a;
+  background-color: var(--surface-2);
+  color: var(--fg-muted);
   padding: 5px 10px;
   font-weight: 600;
-  border-top: 1px solid #d0d7de;
-  border-bottom: 1px solid #d0d7de;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .diff-hunk-header {
-    background-color: #161b22;
-    color: #8b949e;
-    border-color: #30363d;
-  }
+/* Syntax tokens ----------------------------------------------------------- */
+
+.tok-keyword {
+  color: #8250df;
+}
+.tok-string {
+  color: #0a7d55;
+}
+.tok-number {
+  color: #b45309;
+}
+.tok-comment {
+  color: var(--fg-subtle);
+  font-style: italic;
+}
+.tok-key {
+  color: #0550ae;
 }
 
-/* Horizontal scrollbar styling */
-.diff-container-fixed::-webkit-scrollbar {
-  height: 8px;
+.dark .tok-keyword {
+  color: #d2a8ff;
 }
-
-.diff-container-fixed::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.dark .tok-string {
+  color: #7ee787;
 }
-
-@media (prefers-color-scheme: dark) {
-  .diff-container-fixed::-webkit-scrollbar-track {
-    background: #1a1a1a;
-  }
+.dark .tok-number {
+  color: #f0a45d;
 }
-
-.diff-container-fixed::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-.diff-container-fixed::-webkit-scrollbar-thumb:hover {
-  background: #555;
+.dark .tok-key {
+  color: #79c0ff;
 }

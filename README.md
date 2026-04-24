@@ -1,67 +1,102 @@
-# 🚀 RN Safe Upgrade
+# RN Safe Upgrade
 
-A powerful tool to help React Native developers safely upgrade their dependencies with automatic compatibility checking.
+An upgrade assistant for React Native that stays current on its own, and a
+local agent bridge that performs the upgrade inside your project.
 
-## ✨ Features
+Live app: **https://heymeowcat.is-a.dev/rn-safe-upgrade/**
 
-- 📋 **Paste or Upload** your package.json
-- 🔍 **Automatic Analysis** of all dependencies
-- ✅ **Compatibility Checking** against target React Native version
-- 🎯 **Version Recommendations** based on peer dependencies
-- 📊 **Visual Diff** showing all changes
-- 📥 **Download** updated package.json
-- 🌙 **Dark Mode** support
+---
 
-## 🎯 How It Works
+## Why this exists
 
-1. Upload your current `package.json`
-2. Select your current and target React Native versions
-3. Click "Analyze Dependencies"
-4. Review recommended version updates
-5. Download your updated `package.json`
+The official [Upgrade Helper](https://react-native-community.github.io/upgrade-helper/)
+shows the diff between two React Native template versions. That is useful, but:
 
-## 🛠️ Tech Stack
+- its "useful content" is **written by hand for 14 versions** and was last
+  updated for 0.77 - the interesting part goes stale;
+- it does not look at **your** dependencies;
+- it cannot **do** anything, you still copy every file by hand.
 
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **npm Registry API** - Package information
-- **Lucide React** - Icons
+RN Safe Upgrade fixes all three:
 
-## 🚀 Local Development
+| | Upgrade Helper | RN Safe Upgrade |
+| --- | --- | --- |
+| Version context | none | release date, official announcement, required React and Node versions |
+| Breaking changes | hand written, 14 versions | extracted from the published release notes of **every** version |
+| Your dependencies | not checked | resolved against the npm registry and the target release |
+| Applying the upgrade | manual | a local agent bridge that edits your project |
+
+## Features
+
+- **Auto-generated upgrade brief** - the release headline, the required React
+  version, the Node range, the breaking changes, the deprecations and the
+  removals of the target release, all read from the sources React Native
+  publishes.
+- **Dependency compatibility** - every dependency in your `package.json` is
+  checked against the peer dependency ranges that the target React Native
+  release requires, including the React version itself.
+- **Template diff** - the full diff between the two template versions, with
+  per-file review state, patch export and an accurate risk assessment.
+- **Local agent bridge** - run one command in your project and the app applies
+  the upgrade: it creates a branch, updates `package.json`, syncs the template
+  files and can hand the remaining source changes to your agent CLI.
+- **Command palette** - `⌘K` / `Ctrl+K` for everything.
+- **Shareable URLs** - the version pair, app name and package are part of the
+  URL.
+
+## Nothing to maintain by hand
+
+Every piece of content is fetched at runtime from public sources:
+
+| Content | Source |
+| --- | --- |
+| Version list | [rn-diff-purge `RELEASES`](https://github.com/react-native-community/rn-diff-purge) |
+| Release channels | npm `dist-tags` |
+| Release dates | GitHub releases API |
+| Release notes, breaking changes | GitHub releases API |
+| Official announcement and headline | reactnative.dev |
+| Required React / Node versions | npm manifest of the release |
+| Template diff | rn-diff-purge |
+| Dependency compatibility | npm registry peer dependencies |
+
+A snapshot of the catalog is committed to the repository and refreshed by a
+scheduled GitHub Action, so the first paint is instant and the app keeps
+working offline.
+
+## The agent bridge
 
 ```bash
-# Clone the repository
-git clone https://github.com/heymeowcat/rn-safe-upgrade.git
-cd rn-safe-upgrade
+# in your React Native project
+npx --yes github:heymeowcat/rn-safe-upgrade
+```
 
-# Install dependencies
+The CLI starts a small local server, prints a link, and the web app connects
+to it. From there you can:
+
+- apply the dependency updates and sync the template files,
+- or let an installed agent CLI (`claude`, `codex`, `gemini`, `opencode`,
+  `aider`) do the source code changes, with the upgrade brief as its prompt.
+
+Everything happens on your machine. See [`agent/README.md`](./agent/README.md)
+for the details.
+
+## Development
+
+```bash
 npm install
-
-# Run development server
-npm run dev
-
-# Open http://localhost:3000
+npm run dev            # http://localhost:3000
+npm run build          # static export into ./out
+npm run check          # typecheck + lint
+npm run refresh-data   # regenerate the committed catalog snapshot
 ```
 
-## 📦 Build & Deploy
+The app is a static export (`output: "export"`), deployed to GitHub Pages.
 
-```bash
-# Build for production
-npm run build
+## Stack
 
-# Deploy to GitHub Pages
-npm run deploy
-```
+Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4, and a
+zero-dependency Node CLI for the bridge.
 
-## 🤝 Contributing
+## License
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-MIT License - feel free to use this project for any purpose.
-
-## 🙏 Acknowledgments
-
-- Inspired by [React Native Upgrade Helper](https://react-native-community.github.io/upgrade-helper/)
+MIT
