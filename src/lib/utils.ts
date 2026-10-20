@@ -1,9 +1,11 @@
 /**
  * Small class-name helpers.
  *
- * `cn` behaves like `clsx` and additionally resolves conflicting Tailwind
- * utilities from the same group (the later class wins), which keeps component
- * overrides predictable without pulling in a dependency.
+ * `cn` behaves like `clsx` and resolves conflicting Tailwind utilities from
+ * the same group (the later class wins). The groups have to be precise: the
+ * padding axes are separate, a text size is not a text colour and a font
+ * family is not a font weight. Merging them by a loose prefix silently drops
+ * classes.
  */
 
 type ClassValue =
@@ -37,29 +39,75 @@ export function clsx(...inputs: ClassValue[]): string {
   return classes.join(" ");
 }
 
-/** Groups of mutually exclusive Tailwind utilities. */
-const CONFLICT_GROUPS: Array<{ test: RegExp; prefix: string }> = [
-  { test: /^p[xytblr]?-/, prefix: "p" },
-  { test: /^m[xytblr]?-/, prefix: "m" },
-  { test: /^w-/, prefix: "w" },
-  { test: /^h-/, prefix: "h" },
-  { test: /^text-(xs|sm|base|lg|xl|\d|xs|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)$/, prefix: "text-size" },
-  { test: /^text-/, prefix: "text-color" },
-  { test: /^bg-/, prefix: "bg" },
-  { test: /^border-/, prefix: "border" },
-  { test: /^rounded(-|$)/, prefix: "rounded" },
-  { test: /^gap-/, prefix: "gap" },
-  { test: /^flex-/, prefix: "flex" },
-  { test: /^font-/, prefix: "font" },
-  { test: /^shadow/, prefix: "shadow" },
-  { test: /^opacity-/, prefix: "opacity" },
-];
+const TEXT_SIZES =
+  /^(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)$/;
+const TEXT_ALIGNMENTS = /^(left|center|right|justify|start|end)$/;
+const FONT_FAMILIES = /^(sans|serif|mono)$/;
+const FONT_WEIGHTS =
+  /^(thin|extralight|light|normal|medium|semibold|bold|extrabold|black|[1-9]00)$/;
 
+/**
+ * The group a utility belongs to. Two classes in the same group cannot be
+ * applied at the same time, so the later one replaces the earlier one.
+ */
 function groupOf(className: string): string | null {
-  if (className.includes(":")) return null; // variants are scoped separately
-  for (const group of CONFLICT_GROUPS) {
-    if (group.test.test(className)) return group.prefix;
+  // A variant is only active in a certain state, so it never conflicts with
+  // the base class.
+  if (className.includes(":")) return null;
+
+  // The padding and the margin axes are independent of each other.
+  const box = className.match(/^(p|m)([xytrbl])?-/);
+  if (box) return `${box[1]}-${box[2] ?? "all"}`;
+
+  if (className.startsWith("text-")) {
+    const value = className.slice(5);
+    if (TEXT_ALIGNMENTS.test(value)) return "text-align";
+    if (TEXT_SIZES.test(value)) return "text-size";
+    if (value.startsWith("[")) {
+      const inner = value.slice(1, -1);
+      // A length is a size, a colour is a colour.
+      if (/^(#|rgb|hsl|oklch|oklab|lab|lch|color)/.test(inner)) {
+        return "text-color";
+      }
+      return "text-size";
+    }
+    return "text-color";
   }
+
+  if (className.startsWith("font-")) {
+    const value = className.slice(5);
+    if (FONT_FAMILIES.test(value)) return "font-family";
+    if (FONT_WEIGHTS.test(value)) return "font-weight";
+    if (value === "italic" || value === "not-italic") return "font-style";
+    if (value.startsWith("[")) return "font-size";
+    return null;
+  }
+
+  if (className.startsWith("w-")) return "width";
+  if (className.startsWith("h-")) return "height";
+  if (className.startsWith("min-w-")) return "min-width";
+  if (className.startsWith("max-w-")) return "max-width";
+  if (className.startsWith("min-h-")) return "min-height";
+  if (className.startsWith("max-h-")) return "max-height";
+  if (className.startsWith("bg-")) return "background";
+  if (className.startsWith("rounded")) return "radius";
+  if (className.startsWith("gap-")) return "gap";
+  if (className.startsWith("flex-")) return "flex";
+  if (className.startsWith("shadow")) return "shadow";
+  if (className.startsWith("opacity-")) return "opacity";
+  if (className.startsWith("z-")) return "z-index";
+  if (className.startsWith("inset-")) return "inset";
+  if (className.startsWith("top-")) return "top";
+  if (className.startsWith("left-")) return "left";
+  if (className.startsWith("right-")) return "right";
+  if (className.startsWith("border")) {
+    if (className === "border" || /^border-\d/.test(className)) {
+      return "border-width";
+    }
+    if (className.startsWith("border-")) return "border-color";
+    return null;
+  }
+
   return null;
 }
 
@@ -74,15 +122,11 @@ export function cn(...inputs: ClassValue[]): string {
       result.push(className);
       continue;
     }
-    const variantPrefix = className.includes(":")
-      ? className.slice(0, className.lastIndexOf(":") + 1)
-      : "";
-    const key = `${variantPrefix}${group}`;
-    const previous = seen.get(key);
+    const previous = seen.get(group);
     if (previous !== undefined) {
       result[previous] = className;
     } else {
-      seen.set(key, result.length);
+      seen.set(group, result.length);
       result.push(className);
     }
   }

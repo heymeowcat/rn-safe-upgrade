@@ -142,12 +142,12 @@ function VersionCombobox({
           open && "border-accent-border ring-2 ring-accent/20"
         )}
       >
-        <span className="flex min-w-0 items-center gap-2">
-          <span className="truncate font-mono text-[13.5px] font-medium text-fg">
+        <span className="flex min-w-0 items-baseline gap-2">
+          <span className="shrink-0 font-mono text-[13.5px] font-medium text-fg">
             {value || "Select version"}
           </span>
           {selected?.releasedAt ? (
-            <span className="hidden truncate text-[11.5px] text-fg-subtle sm:inline">
+            <span className="min-w-0 truncate text-[11.5px] text-fg-subtle">
               {formatRelativeTime(selected.releasedAt)}
             </span>
           ) : null}
@@ -164,7 +164,7 @@ function VersionCombobox({
       {open ? (
         <div
           className={cn(
-            "absolute z-50 mt-1.5 w-[min(24rem,calc(100vw-3rem))] overflow-hidden rounded-[10px] border border-border bg-surface shadow-[var(--shadow-lg)]",
+            "absolute z-50 mt-1.5 w-[min(20rem,calc(100vw-2rem))] min-w-full overflow-hidden rounded-[10px] border border-border bg-surface shadow-[var(--shadow-lg)]",
             align === "right" ? "right-0" : "left-0"
           )}
         >
@@ -309,7 +309,7 @@ export default function VersionSelector() {
 
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2 sm:gap-3">
+      <div className="space-y-2">
         <VersionCombobox
           label="From"
           value={fromVersion}
@@ -318,15 +318,19 @@ export default function VersionSelector() {
           exclude={toVersion}
         />
 
-        <button
-          type="button"
-          onClick={swapVersions}
-          title="Swap versions"
-          aria-label="Swap versions"
-          className="mb-1 hidden h-8 w-8 items-center justify-center rounded-[7px] border border-border bg-surface text-fg-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg sm:flex"
-        >
-          <ArrowLeftRight className="h-3.5 w-3.5" aria-hidden />
-        </button>
+        <div className="flex items-center gap-2">
+          <span className="h-px flex-1 bg-border" aria-hidden />
+          <button
+            type="button"
+            onClick={swapVersions}
+            title="Swap versions"
+            aria-label="Swap versions"
+            className="flex h-7 w-7 items-center justify-center rounded-[7px] border border-border bg-surface text-fg-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
+          >
+            <ArrowLeftRight className="h-3.5 w-3.5" aria-hidden />
+          </button>
+          <span className="h-px flex-1 bg-border" aria-hidden />
+        </div>
 
         <VersionCombobox
           label="To"
