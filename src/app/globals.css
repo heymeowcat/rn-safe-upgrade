@@ -152,7 +152,12 @@ html.dark {
 body {
   background-color: var(--bg);
   color: var(--fg);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  /*
+   * The theme variables are inlined by Tailwind, so the font stack is
+   * written out here - the next/font variable is set on the html element.
+   */
+  font-family: var(--font-inter, ui-sans-serif), ui-sans-serif, system-ui,
+    sans-serif;
   font-feature-settings: "cv02", "cv03", "cv04", "ss01";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
