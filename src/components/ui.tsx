@@ -2,7 +2,7 @@
 
 import { forwardRef, useCallback, useEffect, useState } from "react";
 import { Check, Copy, Loader2 } from "lucide-react";
-import { clsx } from "@/lib/utils";
+import { cn, clsx } from "@/lib/utils";
 
 /* -------------------------------------------------------------------------- */
 /* Button                                                                     */
@@ -373,9 +373,20 @@ export function Segmented<T extends string>({
 /* Misc                                                                       */
 /* -------------------------------------------------------------------------- */
 
-export function Kbd({ children }: { children: React.ReactNode }) {
+export function Kbd({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <kbd className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[4px] border border-border bg-surface-2 px-1 font-mono text-[10.5px] font-medium text-fg-muted">
+    <kbd
+      className={cn(
+        "inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[4px] border border-border bg-surface-2 px-1 font-mono text-[10.5px] font-medium text-fg-muted",
+        className
+      )}
+    >
       {children}
     </kbd>
   );

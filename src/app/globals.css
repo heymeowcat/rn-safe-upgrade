@@ -222,6 +222,25 @@ select:focus-visible {
 }
 
 /* ---------------------------------------------------------------------------
+   Platform hints
+
+   The keyboard hints follow the platform. The attribute is set before the
+   first paint, so there is no flash and no hydration mismatch.
+--------------------------------------------------------------------------- */
+
+.mac-only {
+  display: none;
+}
+
+[data-platform="mac"] .mac-only {
+  display: inline-flex;
+}
+
+[data-platform="mac"] .other-only {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
    Utilities
 --------------------------------------------------------------------------- */
 
