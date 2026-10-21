@@ -146,7 +146,7 @@ export default function ProjectPanel() {
               setError(null);
             }}
             placeholder='{ "name": "my-app", "dependencies": { … } }'
-            className="h-40 w-full resize-y rounded-[8px] border border-border bg-surface p-2.5 font-mono text-[11.5px] leading-4 text-fg outline-none transition-colors placeholder:text-fg-subtle focus:border-accent-border"
+            className="h-40 w-full resize-y rounded-[8px] border border-border bg-surface p-2.5 font-mono text-[11.5px] leading-4 text-fg outline-none transition-colors placeholder:text-fg-subtle focus:border-accent-border focus-visible:ring-2 focus-visible:ring-accent/15"
             aria-label="package.json content"
           />
           {error ? (

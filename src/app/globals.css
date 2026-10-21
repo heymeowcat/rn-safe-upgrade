@@ -134,8 +134,13 @@
 
 /* ---------------------------------------------------------------------------
    Base
+
+   Everything in this section lives in the base layer. Unlayered rules would
+   beat every Tailwind utility, which silently kills the border colours and
+   the state variants.
 --------------------------------------------------------------------------- */
 
+@layer base {
 * {
   border-color: var(--border);
 }
@@ -174,6 +179,16 @@ body {
   border-radius: 3px;
 }
 
+/*
+ * A form field gets a ring that sits on the field, an outline around it
+ * reads as a separate blue box.
+ */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
 /* Scrollbars -------------------------------------------------------------- */
 
 * {
@@ -191,14 +206,19 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--border-strong);
+  background-color: var(--border);
   border-radius: 999px;
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   background-clip: content-box;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: var(--fg-subtle);
+  background-color: var(--border-strong);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
 }
 
 /* ---------------------------------------------------------------------------
@@ -280,6 +300,7 @@ body {
   }
 }
 
+@layer components {
 /* ---------------------------------------------------------------------------
    Diff viewer theme
    react-diff-view ships its own stylesheet; we only re-theme it with tokens.
@@ -377,6 +398,7 @@ body {
   border-bottom: 1px solid var(--border);
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12px;
+}
 }
 
 /* Syntax tokens ----------------------------------------------------------- */

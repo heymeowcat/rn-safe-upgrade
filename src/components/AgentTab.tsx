@@ -248,7 +248,7 @@ export default function AgentTab() {
                     value={token}
                     onChange={(event) => setToken(event.target.value)}
                     placeholder="session token"
-                    className="h-9 min-w-[180px] flex-1 rounded-[7px] border border-border bg-surface px-2.5 font-mono text-[12.5px] text-fg outline-none placeholder:text-fg-subtle focus:border-accent-border"
+                    className="h-9 min-w-[180px] flex-1 rounded-[7px] border border-border bg-surface px-2.5 font-mono text-[12.5px] text-fg outline-none placeholder:text-fg-subtle focus:border-accent-border focus-visible:ring-2 focus-visible:ring-accent/15"
                     aria-label="Session token"
                   />
 

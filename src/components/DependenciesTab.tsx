@@ -190,7 +190,7 @@ export default function DependenciesTab() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search packages"
-              className="h-8 w-full rounded-[7px] border border-border bg-surface pl-8 pr-2.5 text-[12.5px] text-fg outline-none transition-colors placeholder:text-fg-subtle focus:border-accent-border"
+              className="h-8 w-full rounded-[7px] border border-border bg-surface pl-8 pr-2.5 text-[12.5px] text-fg outline-none transition-colors placeholder:text-fg-subtle focus:border-accent-border focus-visible:ring-2 focus-visible:ring-accent/15"
               aria-label="Search packages"
             />
           </div>

@@ -231,7 +231,7 @@ export default function CommandPalette({
       />
 
       <div className="relative w-full max-w-lg overflow-hidden rounded-[12px] border border-border bg-surface shadow-[var(--shadow-lg)]">
-        <div className="flex items-center gap-2.5 border-b border-border px-4">
+        <div className="flex items-center gap-2.5 border-b border-border px-4 transition-colors duration-150 focus-within:border-accent-border">
           <Search className="h-4 w-4 shrink-0 text-fg-subtle" aria-hidden />
           <input
             ref={inputRef}

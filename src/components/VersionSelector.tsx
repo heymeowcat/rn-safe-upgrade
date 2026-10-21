@@ -168,7 +168,7 @@ function VersionCombobox({
             align === "right" ? "right-0" : "left-0"
           )}
         >
-          <div className="flex items-center gap-2 border-b border-border px-3">
+          <div className="flex items-center gap-2 border-b border-border px-3 transition-colors duration-150 focus-within:border-accent-border">
             <Search className="h-3.5 w-3.5 shrink-0 text-fg-subtle" aria-hidden />
             <input
               ref={inputRef}
