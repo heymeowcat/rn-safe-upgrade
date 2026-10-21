@@ -117,6 +117,18 @@ const themeScript = `
     document.documentElement.classList.toggle("dark", dark);
     document.documentElement.style.colorScheme = dark ? "dark" : "light";
   } catch (e) {}
+
+  // The shortcut hints follow the platform, decided before the first paint.
+  try {
+    var platform =
+      (navigator.userAgentData && navigator.userAgentData.platform) ||
+      navigator.platform ||
+      "";
+    var isMac = /mac|iphone|ipad|ipod/i.test(platform);
+    document.documentElement.dataset.platform = isMac ? "mac" : "other";
+  } catch (e) {
+    document.documentElement.dataset.platform = "other";
+  }
 })();
 `;
 

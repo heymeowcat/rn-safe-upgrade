@@ -339,7 +339,8 @@ export default function CommandPalette({
             <Kbd>↓</Kbd> navigate
           </span>
           <span className="flex items-center gap-1">
-            <Kbd>↵</Kbd> select
+            <Kbd className="mac-only">↵</Kbd>
+            <Kbd className="other-only">Enter</Kbd> select
           </span>
           <span className="ml-auto flex items-center gap-1">
             <LayoutList className="h-3 w-3" aria-hidden />

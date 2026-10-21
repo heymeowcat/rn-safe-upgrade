@@ -114,7 +114,8 @@ export default function AppHeader({
             className="hidden sm:inline-flex"
             icon={<Command className="h-3.5 w-3.5" aria-hidden />}
           >
-            <Kbd>⌘K</Kbd>
+            <Kbd className="mac-only">⌘K</Kbd>
+            <Kbd className="other-only">Ctrl K</Kbd>
           </Button>
 
           <Button

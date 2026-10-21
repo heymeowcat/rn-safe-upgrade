@@ -390,7 +390,9 @@ export default function VersionSelector() {
       </p>
 
       <p className="hidden text-[11.5px] text-fg-subtle lg:block">
-        Tip: press <Kbd>⌘</Kbd> <Kbd>K</Kbd> to jump anywhere.
+        Tip: press{" "}
+        <Kbd className="mac-only">⌘</Kbd>
+        <Kbd className="other-only">Ctrl</Kbd> <Kbd>K</Kbd> to jump anywhere.
       </p>
     </div>
   );
