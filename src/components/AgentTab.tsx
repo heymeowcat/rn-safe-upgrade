@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Bot,
   CheckCircle2,
+  ChevronDown,
+  ChevronRight,
   CircleDot,
   Copy,
   ExternalLink,
@@ -56,6 +58,7 @@ export default function AgentTab() {
   const [running, setRunning] = useState(false);
   const [useAgent, setUseAgent] = useState(true);
   const [createMissingFiles, setCreateMissingFiles] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const logEndRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
@@ -506,8 +509,35 @@ export default function AgentTab() {
           title="What the agent will do"
           description="The exact brief that is handed to the agent or applied by the bridge."
           icon={<Bot className="h-4 w-4" />}
+          actions={
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowPreview((value) => !value)}
+              icon={
+                showPreview ? (
+                  <ChevronDown className="h-3.5 w-3.5" aria-hidden />
+                ) : (
+                  <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+                )
+              }
+            >
+              {showPreview ? "Hide the brief" : "Preview the brief"}
+            </Button>
+          }
         />
         <div className="px-4 py-3">
+          <ol className="mb-4 space-y-1.5">
+            {plan.steps.map((step, index) => (
+              <li key={step} className="flex gap-2.5 text-[12.5px] leading-5 text-fg">
+                <span className="tabular mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] bg-surface-3 text-[10.5px] font-semibold text-fg-muted">
+                  {index + 1}
+                </span>
+                {step}
+              </li>
+            ))}
+          </ol>
+
           {plan.dependencyUpdates.length ? (
             <div className="mb-3">
               <SectionLabel className="mb-1.5">Dependency updates</SectionLabel>
@@ -550,10 +580,28 @@ export default function AgentTab() {
                       <span className="text-fg">{change.area}: </span>
                     ) : null}
                     {change.text}
+                    <span className="mt-0.5 block text-fg-subtle">
+                      Do: {change.action}
+                      {change.file ? (
+                        <>
+                          {" "}
+                          in <code className="font-mono">{change.file}</code>
+                        </>
+                      ) : null}
+                    </span>
                   </li>
                 ))}
               </ul>
             </div>
+          ) : null}
+
+          {showPreview ? (
+            <pre
+              data-plan-preview
+              className="mt-3 max-h-[420px] overflow-auto rounded-[8px] border border-border bg-bg-subtle p-3 font-mono text-[11.5px] leading-4.5 text-fg-muted"
+            >
+              {markdown}
+            </pre>
           ) : null}
 
           {diffFiles.length ? (

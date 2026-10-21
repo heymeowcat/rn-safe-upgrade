@@ -639,54 +639,81 @@ function buildAgentPrompt(plan) {
     `You are upgrading a React Native project from ${plan.fromVersion} to ${plan.toVersion}.`
   );
   lines.push("");
-  lines.push("Project context:");
-  lines.push(`- React Native version: ${plan.fromVersion} -> ${plan.toVersion}`);
-  if (plan.reactVersion) {
-    lines.push(`- Required react version: ${plan.reactVersion}`);
-  }
-  if (plan.appName) lines.push(`- Application name: ${plan.appName}`);
-  if (plan.appPackage) lines.push(`- Android package: ${plan.appPackage}`);
+  lines.push("Do the following, in this order:");
   lines.push("");
 
+  let step = 1;
   if (plan.dependencyUpdates?.length) {
-    lines.push("Dependency updates that must be applied to package.json:");
+    lines.push(`${step++}. Update the dependencies in package.json:`);
     for (const update of plan.dependencyUpdates) {
-      lines.push(`- ${update.name}: ${update.current} -> ${update.version}`);
+      lines.push(
+        `   - ${update.name}: ${update.current} -> ${update.range ?? update.version}`
+      );
+    }
+    const install = plan.dependencyUpdates
+      .map((update) => `${update.name}@${update.range ?? update.version}`)
+      .join(" ");
+    lines.push(`   Then run: npm install ${install}`);
+    lines.push("");
+  }
+
+  if (plan.filesToApply?.length) {
+    lines.push(
+      `${step++}. Apply the template files of React Native ${plan.toVersion}.`
+    );
+    lines.push(
+      "   The bridge already copied them, check that they are in place and keep the app name and the package id:"
+    );
+    for (const file of plan.filesToApply.slice(0, 120)) {
+      lines.push(`   - ${file.path}`);
     }
     lines.push("");
   }
 
   if (plan.breakingChanges?.length) {
-    lines.push("Breaking changes / deprecations reported in the release notes:");
+    lines.push(
+      `${step++}. Update the application code for the changes below.`
+    );
     for (const change of plan.breakingChanges.slice(0, 40)) {
-      lines.push(`- [${change.area ?? "general"}] ${change.text}`);
+      const area = change.area ? `[${change.area}] ` : "";
+      lines.push(`   - ${area}${change.text}`);
+      if (change.action) lines.push(`     Do: ${change.action}`);
+      if (change.file) lines.push(`     Usual place: ${change.file}`);
     }
     lines.push("");
   }
 
-  if (plan.requiredFiles?.length) {
-    lines.push("Files that changed in the official template diff:");
-    for (const file of plan.requiredFiles.slice(0, 120)) {
-      lines.push(`- ${file}`);
-    }
+  lines.push(`${step++}. Verify the project:`);
+  lines.push("   - npm install");
+  lines.push("   - npx react-native run-android and npx react-native run-ios");
+  lines.push("");
+
+  if (plan.reactVersion) {
+    lines.push(`Context: React Native ${plan.toVersion} requires react ${plan.reactVersion}.`);
     lines.push("");
   }
+  if (plan.appName) {
+    lines.push(`Context: the application name is ${plan.appName}.`);
+  }
+  if (plan.appPackage) {
+    lines.push(`Context: the android package id is ${plan.appPackage}.`);
+  }
+  lines.push("");
 
-  lines.push("Your job:");
+  lines.push("Rules:");
   lines.push(
-    "1. Apply the dependency updates to package.json (the bridge already did this, verify it)."
+    "- Keep the change set minimal and consistent with the existing code style."
   );
   lines.push(
-    "2. Update the project's source code for every breaking change listed above."
+    "- Do not remove the behaviour of the app, only adapt it to the new release."
   );
   lines.push(
-    "3. Keep the change set minimal and consistent with the existing code style."
-  );
-  lines.push(
-    "4. Do not run destructive commands and do not commit unless explicitly asked."
+    "- Do not run destructive commands and do not commit unless explicitly asked."
   );
   lines.push("");
-  lines.push("Report the files you changed and anything that needs manual attention.");
+  lines.push(
+    "Report the files you changed and anything that needs manual attention."
+  );
 
   return lines.join("\n");
 }
