@@ -63,14 +63,12 @@ export default function AppHeader({
       <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
         <Link href="/" prefetch={false} className="flex items-center gap-2.5">
           <Logo />
-          <span className="hidden sm:block">
-            <span className="block text-[13.5px] font-semibold leading-4 text-fg">
-              RN Safe Upgrade
-            </span>
-            <span className="block text-[11px] leading-4 text-fg-subtle">
-              React Native upgrade assistant
-            </span>
-          </span>
+          <h1 className="text-[13.5px] font-semibold leading-4 text-fg">
+            RN Safe Upgrade
+          </h1>
+          <p className="hidden text-[11px] leading-4 text-fg-subtle sm:block">
+            React Native upgrade assistant
+          </p>
         </Link>
 
         {fromVersion && toVersion ? (

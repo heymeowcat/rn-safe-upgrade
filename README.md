@@ -5,6 +5,10 @@ local agent bridge that performs the upgrade inside your project.
 
 Live app: **https://heymeowcat.is-a.dev/rn-safe-upgrade/**
 
+```bash
+npx --yes github:heymeowcat/rn-safe-upgrade   # the local agent bridge
+```
+
 ---
 
 ## Why this exists
@@ -96,6 +100,13 @@ The app is a static export (`output: "export"`), deployed to GitHub Pages.
 
 Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4, and a
 zero-dependency Node CLI for the bridge.
+
+## Search and discovery
+
+- The app is indexed with a canonical url, an open graph preview, structured
+  data and a sitemap: `public/sitemap.xml`, `public/robots.txt`.
+- Every exported plan ends with a link to the app, and the version pair is
+  part of the url, so a shared plan is a shared link.
 
 ## License
 

@@ -7,6 +7,7 @@ import {
   FileText,
   Files,
   LayoutList,
+  Link2,
   Package,
   RefreshCw,
   Search,
@@ -82,6 +83,10 @@ export default function CommandPalette({
       refreshCatalog,
       latestStable,
       setToVersion,
+      fromVersion,
+      toVersion,
+      appName,
+      appPackage,
     } = session;
 
     const list: Command[] = [
@@ -159,6 +164,25 @@ export default function CommandPalette({
         run: () => setToVersion(latestStable),
       });
     }
+
+    // A link to the current view, so an answer can be shared with a team.
+    list.push({
+      id: "share",
+      label: "Copy a link to this upgrade",
+      group: "Share",
+      icon: <Link2 className="h-3.5 w-3.5" aria-hidden />,
+      run: () => {
+        if (typeof window === "undefined") return;
+        const url = new URL(window.location.href);
+        url.search = "";
+        url.hash = "";
+        if (fromVersion) url.searchParams.set("from", fromVersion);
+        if (toVersion) url.searchParams.set("to", toVersion);
+        if (appName) url.searchParams.set("name", appName);
+        if (appPackage) url.searchParams.set("package", appPackage);
+        copy(url.toString());
+      },
+    });
 
     list.push({
       id: "refresh",
