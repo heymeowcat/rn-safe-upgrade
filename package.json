@@ -79,5 +79,14 @@
     "sharp": "^0.35.5",
     "source-map-js@<1.2.2": "^1.2.2",
     "tar@<=7.5.20": "^7.5.21"
-  }
+  },
+  "homepage": "https://heymeowcat.is-a.dev/rn-safe-upgrade/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heymeowcat/rn-safe-upgrade.git"
+  },
+  "bugs": {
+    "url": "https://github.com/heymeowcat/rn-safe-upgrade/issues"
+  },
+  "funding": "https://github.com/sponsors/heymeowcat"
 }

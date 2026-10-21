@@ -13,6 +13,7 @@ import {
   loadCatalog,
   findVersion,
   fetchHeadline,
+  initialSession,
   semverCompare as compareVersions,
   type RnCatalog,
   type RnVersionInfo,
@@ -99,13 +100,18 @@ export function UpgradeSessionProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [catalog, setCatalog] = useState<RnCatalog | null>(null);
-  const [catalogLoading, setCatalogLoading] = useState(true);
+  // The snapshot is the state the server renders, the browser refreshes it.
+  const [initial] = useState(initialSession);
+  const [catalog, setCatalog] = useState<RnCatalog | null>(initial.catalog);
+  const [catalogLoading, setCatalogLoading] = useState(false);
   const [catalogError, setCatalogError] = useState<string | null>(null);
 
   // The first render has to match the statically generated HTML, so the URL
   // is read after mount.
-  const [versions, setVersions] = useState({ from: "", to: "" });
+  const [versions, setVersions] = useState({
+    from: initial.fromVersion,
+    to: initial.toVersion,
+  });
   const fromVersion = versions.from;
   const toVersion = versions.to;
   const [includePrerelease, setIncludePrerelease] = useState(false);
@@ -168,7 +174,6 @@ export function UpgradeSessionProvider({
     let cancelled = false;
 
     (async () => {
-      setCatalogLoading(true);
       try {
         const next = await loadCatalog();
         if (cancelled) return;

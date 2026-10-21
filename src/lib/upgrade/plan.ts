@@ -184,5 +184,13 @@ export function planToMarkdown(plan: UpgradePlan, brief?: UpgradeBrief | null): 
   lines.push("- [ ] App builds on iOS");
   lines.push("");
 
+  // The plan travels through pull requests and chat, so it carries the link.
+  lines.push("---");
+  lines.push("");
+  lines.push(
+    "Generated with [RN Safe Upgrade](https://heymeowcat.is-a.dev/rn-safe-upgrade/)"
+  );
+  lines.push("");
+
   return lines.join("\n");
 }

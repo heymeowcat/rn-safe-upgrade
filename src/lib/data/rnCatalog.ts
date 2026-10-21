@@ -162,7 +162,7 @@ export function parseBlogIndex(files: BlogFile[]): BlogPost[] {
   );
 }
 
-function snapshotToCatalog(): RnCatalog {
+export function snapshotToCatalog(): RnCatalog {
   const snap = snapshot as {
     updatedAt?: number;
     tags?: Record<string, string>;
@@ -426,6 +426,26 @@ export async function loadCatalog(options?: {
   } finally {
     inFlight = null;
   }
+}
+
+/**
+ * The state the app starts with: the catalog from the committed snapshot and
+ * the version pair that is shown by default. It is rendered on the server so
+ * the first paint already contains the content.
+ */
+export function initialSession(): {
+  catalog: RnCatalog;
+  fromVersion: string;
+  toVersion: string;
+} {
+  const catalog = snapshotToCatalog();
+  const stable = catalog.versions.filter((version) => !version.prerelease);
+
+  const toVersion = catalog.tags.latest ?? stable[0]?.version ?? "";
+  const index = stable.findIndex((version) => version.version === toVersion);
+  const fromVersion = stable[index + 1]?.version ?? stable[0]?.version ?? "";
+
+  return { catalog, fromVersion, toVersion };
 }
 
 export function findVersion(

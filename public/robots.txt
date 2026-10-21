@@ -1,0 +1,6 @@
+# RN Safe Upgrade - https://heymeowcat.is-a.dev/rn-safe-upgrade/
+User-agent: *
+Allow: /
+
+# The site is served over https only, the pages redirect to the secure url.
+Sitemap: https://heymeowcat.is-a.dev/sitemap.xml
