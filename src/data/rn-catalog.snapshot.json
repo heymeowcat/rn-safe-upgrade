@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1793097052744,
+  "updatedAt": 1793186335315,
   "tags": {
     "0.67-stable": "0.67.5",
     "0.66-stable": "0.66.5",
@@ -22,10 +22,21 @@
     "0.83-stable": "0.83.10",
     "0.86-stable": "0.86.3",
     "next": "0.88.0-rc.6",
-    "latest": "0.88.0",
+    "latest": "0.88.1",
     "nightly": "0.89.0-nightly-20261027-7225d43c3"
   },
   "versions": [
+    {
+      "version": "0.88.1",
+      "releasedAt": "2026-10-27T17:39:23Z",
+      "prerelease": false,
+      "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx",
+      "blogHeadline": "React Native 0.88 - Web-Based Event Dispatching, Variable Fonts, SceneDelegate, no breaking changes",
+      "reactPeer": "^19.3.0",
+      "typesPeer": "^19.1.1",
+      "nodeEngine": "^22.13.0 || ^24.3.0 || >= 26.0.0"
+    },
     {
       "version": "0.88.0",
       "releasedAt": "2026-10-15T22:37:17Z",
@@ -39,6 +50,7 @@
     },
     {
       "version": "0.88.0-rc.6",
+      "releasedAt": "2026-10-27T17:42:15Z",
       "prerelease": true,
       "blogUrl": "https://reactnative.dev/blog/2026/10/19/react-native-0.88",
       "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2026-10-19-react-native-0.88.mdx"
@@ -507,11 +519,7 @@
       "releasedAt": "2025-10-21T09:49:58Z",
       "prerelease": false,
       "blogUrl": "https://reactnative.dev/blog/2025/10/08/react-native-0.82",
-      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx",
-      "blogHeadline": "React Native 0.82 - A New Era",
-      "reactPeer": "^19.1.1",
-      "typesPeer": "^19.1.1",
-      "nodeEngine": ">= 20.19.4"
+      "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-10-08-react-native-0.82.mdx"
     },
     {
       "version": "0.82.0",
@@ -627,14 +635,12 @@
     },
     {
       "version": "0.81.0-rc.1",
-      "releasedAt": "2025-07-15T16:49:08Z",
       "prerelease": true,
       "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
       "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
     },
     {
       "version": "0.81.0-rc.0",
-      "releasedAt": "2025-07-10T09:24:05Z",
       "prerelease": true,
       "blogUrl": "https://reactnative.dev/blog/2025/08/12/react-native-0.81",
       "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-08-12-react-native-0.81.mdx"
