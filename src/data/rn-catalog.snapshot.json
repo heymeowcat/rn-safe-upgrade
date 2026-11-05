@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1793797073968,
+  "updatedAt": 1793884174860,
   "tags": {
     "0.67-stable": "0.67.5",
     "0.66-stable": "0.66.5",
@@ -21,13 +21,14 @@
     "0.81-stable": "0.81.6",
     "0.83-stable": "0.83.10",
     "0.86-stable": "0.86.3",
-    "next": "0.89.0-rc.0",
     "latest": "0.88.1",
-    "nightly": "0.89.0-nightly-20261104-edf2b86e6"
+    "nightly": "0.90.0-nightly-20261105-25d63d471",
+    "next": "0.89.0-rc.0"
   },
   "versions": [
     {
       "version": "0.89.0-rc.0",
+      "releasedAt": "2026-11-04T13:13:49Z",
       "prerelease": true
     },
     {
@@ -853,7 +854,6 @@
     },
     {
       "version": "0.77.3",
-      "releasedAt": "2025-07-21T17:29:08Z",
       "prerelease": false,
       "blogUrl": "https://reactnative.dev/blog/2025/01/21/version-0.77",
       "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-01-21-version-0.77.mdx"
