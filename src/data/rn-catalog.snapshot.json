@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794491027387,
+  "updatedAt": 1794575033167,
   "tags": {
     "0.67-stable": "0.67.5",
     "0.66-stable": "0.66.5",
@@ -23,7 +23,7 @@
     "0.86-stable": "0.86.3",
     "latest": "0.88.1",
     "next": "0.89.0-rc.1",
-    "nightly": "0.90.0-nightly-20261112-897cca827"
+    "nightly": "0.90.0-nightly-20261113-6d587e873"
   },
   "versions": [
     {
