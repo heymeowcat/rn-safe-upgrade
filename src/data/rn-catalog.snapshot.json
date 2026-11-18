@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794925237121,
+  "updatedAt": 1795010086274,
   "tags": {
     "0.67-stable": "0.67.5",
     "0.66-stable": "0.66.5",
@@ -22,10 +22,14 @@
     "0.83-stable": "0.83.10",
     "0.86-stable": "0.86.3",
     "latest": "0.88.1",
-    "next": "0.89.0-rc.1",
-    "nightly": "0.90.0-nightly-20261117-c1acb2bd6"
+    "nightly": "0.90.0-nightly-20261118-ebc180e0a",
+    "next": "0.89.0-rc.2"
   },
   "versions": [
+    {
+      "version": "0.89.0-rc.2",
+      "prerelease": true
+    },
     {
       "version": "0.89.0-rc.1",
       "releasedAt": "2026-11-10T01:35:43Z",
