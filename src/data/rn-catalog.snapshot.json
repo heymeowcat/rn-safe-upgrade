@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1795010086274,
+  "updatedAt": 1795098204426,
   "tags": {
     "0.67-stable": "0.67.5",
     "0.66-stable": "0.66.5",
@@ -22,12 +22,13 @@
     "0.83-stable": "0.83.10",
     "0.86-stable": "0.86.3",
     "latest": "0.88.1",
-    "nightly": "0.90.0-nightly-20261118-ebc180e0a",
-    "next": "0.89.0-rc.2"
+    "next": "0.89.0-rc.2",
+    "nightly": "0.90.0-nightly-20261119-f4f8b6a1f"
   },
   "versions": [
     {
       "version": "0.89.0-rc.2",
+      "releasedAt": "2026-11-18T15:08:27Z",
       "prerelease": true
     },
     {
@@ -667,7 +668,6 @@
     },
     {
       "version": "0.80.2",
-      "releasedAt": "2025-07-24T16:09:39Z",
       "prerelease": false,
       "blogUrl": "https://reactnative.dev/blog/2025/06/12/react-native-0.80",
       "blogRawUrl": "https://raw.githubusercontent.com/react/react-native-website/main/website/blog/2025-06-12-react-native-0.80.mdx"
